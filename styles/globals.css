@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald&family=Rum+Raisin&family=Ubuntu&display=swap");
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -13,6 +13,35 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+  }
+}
+* {
+  scrollbar-width: 5px;
+  scrollbar-color: #ffa559 white;
+}
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: white;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ffa559;
+}
+@layer components {
+  .font-BeasNeue {
+    font-family: "Bebas Neue", cursive;
+  }
+  .font-Oswald {
+    font-family: "Oswald", sans-serif;
+  }
+  .font-RumRaisin {
+    font-family: "Rum Raisin", sans-serif;
+  }
+  .font-Ubuntu {
+    font-family: "Ubuntu", sans-serif;
   }
 }
 
