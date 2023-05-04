@@ -3,11 +3,13 @@
 // eslint-disable-next-line @next/next/no-img-element
 
 import React from "react";
+import { useState } from "react";
 
 import Image from "next/image";
 import ImageView from "./Imageviewer";
 import Home from "./home";
-function index() {
+function Index() {
+  const [open, setOpen] = useState(true);
   return (
     <div
       style={{
@@ -17,26 +19,31 @@ function index() {
         flexDirection: "row",
       }}
     >
-      <Sidebar />
+      <Sidebar open={open} setOpen={setOpen} />
       <Home />
     </div>
   );
 }
 
-export default index;
+export default Index;
 
-import { useState } from "react";
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
+const Sidebar = ({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const Menus = [
     { title: "Dashboard", src: "Chart_fill" },
-    { title: "Inbox", src: "Chat" },
-    { title: "Accounts", src: "User", gap: true },
-    { title: "Schedule ", src: "Calendar" },
-    { title: "Search", src: "Search" },
-    { title: "Analytics", src: "Chart" },
-    { title: "Files ", src: "Folder", gap: true },
+    { title: "Images", src: "Chat" },
+    { title: "Documents", src: "User" },
+    { title: "Files", src: "Folder" },
+    { title: "Smart Share", src: "Calendar", gap: true },
+    { title: "Api", src: "Search" },
+    { title: "Storage", src: "Chart" },
     { title: "Setting", src: "Setting" },
+    { title: "Upload", src: "Folder",gap:true },
   ];
   const [dark, setDark] = useState(false);
 
@@ -44,20 +51,18 @@ const Sidebar = () => {
     <div
       className={` ${open ? "w-72" : "w-20 "} ${
         dark ? "bg-black" : "bg-[#E0E0E0]"
-      } h-screen p-5 pt-8 relative duration-300`}
+      } h-screen p-5 pt-8 relative`}
     >
       <div className="flex gap-x-4 items-center">
         <img
           src="/logo.png"
-          className={`cursor-pointer duration-500 ${
-            dark ? "invert-0" : "invert"
-          } ${open && "rotate-[360deg]"}`}
+          className={`cursor-pointer ${dark ? "invert-0" : "invert"}`}
           onClick={() => setOpen(!open)}
         />
         <h1
           className={`${
             dark ? "text-white" : "text-black"
-          } origin-left font-medium text-xl duration-200 ${!open && "scale-0"}`}
+          } origin-left font-medium text-xl duration-200 ${!open && "hidden"}`}
         >
           Cloud Box
         </h1>
@@ -66,8 +71,9 @@ const Sidebar = () => {
         {Menus.map((Menu, index) => (
           <li
             key={index}
-            className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white ${
+            className={`flex p-2 cursor-pointer rounded-full hover:bg-[#f1f1f1] ${
               dark ? "text-white" : "text-black"
+              
             } text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
               index === 0 && "bg-light-white"

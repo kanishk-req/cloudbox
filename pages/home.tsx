@@ -8,7 +8,7 @@ import React from "react";
 import { type } from "os";
 
 function home() {
-  const data:datatype[] = [
+  const data: datatype[] = [
     {
       id: 1,
       name: "image1",
@@ -58,9 +58,9 @@ function home() {
 
   return (
     <div className="w-full max-h-[100vh] overflow-auto bg-white">
-      <div className="flex flex-wrap justify-evenly p-2"> 
+      <div className="flex flex-wrap justify-evenly p-2">
         <Searchbar />
-        <RecentImages data={data.slice(0,4)} />
+        <RecentImages data={data.slice(0, 4)} />
         <RecentFiles />
         <RecentImages data={data} />
       </div>
@@ -73,21 +73,30 @@ export type datatype = {
   url: string;
 };
 
-export const RecentImages = ({data}:{data:datatype[]}) => {
+export const RecentImages = ({ data }: { data: datatype[] }) => {
   return (
     <div className="w-full h-full">
       <h1 className="font-medium py-5 px-7 ">Recent Images</h1>
       <div className="flex flex-wrap justify-between px-5 gap-9">
         {data.map((item) => (
-          <div className="w-[23%]" key={item.id}>
+          <div
+            className="w-[23%] bg-gray-100 hover:bg-[#DCDCDC] rounded-lg focus:ring-4 focus:outline-none"
+            key={item.id}
+          >
             <Link href={`/image/${item.id}`}>
-              <div className="w-full h-60 relative">
-                <Image
-                  src={item.url}
-                  fill
-                  className="rounded-lg object-cover"
-                  alt="test"
-                />
+              <div className="w-full h-60">
+                <div className="h-1/6  w-full  z-10 flex justify-between px-5 capitalize items-center">
+                  {item.name}
+                  <div>:</div>
+                </div>
+                <div className="h-5/6 relative  w-full z-10 ">
+                  <Image
+                    src={item.url}
+                    fill
+                    className="object-cover rounded-b-lg "
+                    alt="test"
+                  />
+                </div>
               </div>
             </Link>
           </div>
@@ -121,17 +130,21 @@ export const RecentFiles = () => {
       <h1 className="font-medium py-5 px-7 ">Recent Files</h1>
       <div className="flex flex-wrap px-5 gap-3">
         {data.map((item) => (
-          <div className="" key={item.id}>
+          <div key={item.id}>
             <Link href={`/image/${item.id}`}>
               <button
                 type="button"
-                className="inline-flex items-center justify-evenly w-[10vw] px-6 py-2.5 text-sm font-medium  text-black bg-[#f2f2f2] rounded-lg hover:bg-[#DCDCDC] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="inline-flex border border-[#f1f1f1] items-center justify-evenly w-[10vw] px-6 py-2.5 text-sm font-medium  text-black bg-[#f2f2f2] rounded-lg hover:bg-[#DCDCDC] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 <span className="inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full">
-                  <Image alt="folder" fill className="invert"  src="/Folder.png" />
+                  <Image
+                    alt="folder"
+                    fill
+                    className="invert"
+                    src="/Folder.png"
+                  />
                 </span>
                 {item.name}
-
               </button>
             </Link>
           </div>
@@ -143,7 +156,7 @@ export const RecentFiles = () => {
 
 export const Searchbar = () => {
   return (
-    <div className="w-full h-20 px-5 py-2">
+    <div className="w-full h-20 px-5 py-2 flex flex-row">
       <div className="w-1/2 h-full">
         <form className="flex items-center">
           <label htmlFor="simple-search" className="sr-only">
@@ -168,13 +181,13 @@ export const Searchbar = () => {
             <input
               type="text"
               id="simple-search"
-              className="bg-[#f2f2f2] pl-10 py-4  text-gray-900 text-sm rounded-xl block w-full"
+              className="bg-[#f2f2f2] pl-10 py-3  text-gray-900 text-sm rounded-xl block w-full focus:outline-none"
               placeholder="Search"
             />
           </div>
           <button
             type="submit"
-            className="p-4 ml-2 text-sm font-medium text-white bg-orange-300 rounded-full  hover:bg-blue-800"
+            className="p-3 ml-2 text-sm font-medium text-white bg-black rounded-full  hover:bg-slate-500"
           >
             <svg
               className="w-5 h-5"
@@ -193,6 +206,16 @@ export const Searchbar = () => {
             <span className="sr-only">Search</span>
           </button>
         </form>
+      </div>
+      <div className="w-1/2 h-full flex justify-end">
+        <div>
+          <button
+            type="submit"
+            className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500"
+          >
+            <Image src={"/user.svg"} alt="user" fill className="invert" />
+          </button> 
+        </div>
       </div>
     </div>
   );
