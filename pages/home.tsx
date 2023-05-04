@@ -4,65 +4,39 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
-import { type } from "os";
+import React, { useEffect, useState } from "react";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import storage from "@/firebase/storage";
 
-function home() {
-  const data: datatype[] = [
-    {
-      id: 1,
-      name: "image1",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg",
-    },
-    {
-      id: 2,
-      name: "image2",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
-    },
-    {
-      id: 3,
-      name: "image3",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
-    },
-    {
-      id: 4,
-      name: "image4",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
-    },
-    {
-      id: 5,
-      name: "image5",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
-    },
-    {
-      id: 6,
-      name: "image2",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg",
-    },
-    {
-      id: 7,
-      name: "image3",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg",
-    },
-    {
-      id: 8,
-      name: "image4",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-3.jpg",
-    },
-    {
-      id: 9,
-      name: "image5",
-      url: "https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-4.jpg",
-    },
-  ];
+function Home() {
+  const [data, setData] = useState<datatype[]>([]);
+  useEffect(() => {
+    const getData = () => {
+      const Data: datatype[] = [];
+      const listRef = ref(storage, "images");
+      listAll(listRef).then((res) => {
+        res.items.forEach((itemRef) => {
+          getDownloadURL(itemRef).then((url) => {
+            Data.push({
+              id: Data.length + 1,
+              name: "image",
+              url,
+            });
+            setData([...Data]);
+          });
+        });
+      });
+    };
+    getData();
+  }, []);
 
   return (
     <div className="w-full max-h-[100vh] overflow-auto bg-white">
       <div className="flex flex-wrap justify-evenly p-2">
         <Searchbar />
-        <RecentImages data={data.slice(0, 4)} />
+        <RecentImages data={data.slice(0, 4)} title="Recent Images" />
         <RecentFiles />
-        <RecentImages data={data} />
+        <RecentImages data={data.slice(4)} title="Images" />
       </div>
     </div>
   );
@@ -73,11 +47,17 @@ export type datatype = {
   url: string;
 };
 
-export const RecentImages = ({ data }: { data: datatype[] }) => {
+export const RecentImages = ({
+  data,
+  title,
+}: {
+  data: datatype[];
+  title: string;
+}) => {
   return (
     <div className="w-full h-full">
-      <h1 className="font-medium py-5 px-7 ">Recent Images</h1>
-      <div className="flex flex-wrap justify-between px-5 gap-9">
+      <h1 className="font-medium py-5 px-7 ">{title}</h1>
+      <div className="flex flex-wrap px-5 gap-9">
         {data.map((item) => (
           <div
             className="w-[23%] bg-gray-100 hover:bg-[#DCDCDC] rounded-lg focus:ring-4 focus:outline-none"
@@ -134,7 +114,7 @@ export const RecentFiles = () => {
             <Link href={`/image/${item.id}`}>
               <button
                 type="button"
-                className="inline-flex border border-[#f1f1f1] items-center justify-evenly w-[10vw] px-6 py-2.5 text-sm font-medium  text-black bg-[#f2f2f2] rounded-lg hover:bg-[#DCDCDC] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="inline-flex border border-[#f1f1f1] items-center justify-evenly w-[10vw] px-6 py-2 text-sm font-medium  text-black bg-[#f2f2f2] rounded-lg hover:bg-[#DCDCDC] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 <span className="inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full">
                   <Image
@@ -214,10 +194,10 @@ export const Searchbar = () => {
             className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500"
           >
             <Image src={"/user.svg"} alt="user" fill className="invert" />
-          </button> 
+          </button>
         </div>
       </div>
     </div>
   );
 };
-export default home;
+export default Home;

@@ -8,6 +8,7 @@ import { useState } from "react";
 import Image from "next/image";
 import ImageView from "./Imageviewer";
 import Home from "./home";
+import Link from "next/link";
 function Index() {
   const [open, setOpen] = useState(true);
   return (
@@ -35,7 +36,7 @@ const Sidebar = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const Menus = [
-    { title: "Dashboard", src: "Chart_fill" },
+    { title: "Home", src: "Chart_fill", link: "" },
     { title: "Images", src: "Chat" },
     { title: "Documents", src: "User" },
     { title: "Files", src: "Folder" },
@@ -43,7 +44,7 @@ const Sidebar = ({
     { title: "Api", src: "Search" },
     { title: "Storage", src: "Chart" },
     { title: "Setting", src: "Setting" },
-    { title: "Upload", src: "Folder",gap:true },
+    { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
   ];
   const [dark, setDark] = useState(false);
 
@@ -69,24 +70,24 @@ const Sidebar = ({
       </div>
       <ul className="pt-6">
         {Menus.map((Menu, index) => (
-          <li
-            key={index}
-            className={`flex p-2 cursor-pointer rounded-full hover:bg-[#f1f1f1] ${
-              dark ? "text-white" : "text-black"
-              
-            } text-sm items-center gap-x-4 
+          <Link href={Menu?.link ?? ""} key={index}>
+            <li
+              className={`flex p-2 cursor-pointer rounded-full hover:bg-[#f1f1f1] ${
+                dark ? "text-white" : "text-black"
+              } text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
-              index === 0 && "bg-light-white"
-            } `}
-          >
-            <img
-              src={`/${Menu.src}.png`}
-              className={`${dark ? "invert-0" : "invert"}`}
-            />
-            <span className={`${!open && "hidden"} origin-left duration-200`}>
-              {Menu.title}
-            </span>
-          </li>
+                index === 0 && "bg-light-white"
+              } `}
+            >
+              <img
+                src={`/${Menu.src}.png`}
+                className={`${dark ? "invert-0" : "invert"}`}
+              />
+              <span className={`${!open && "hidden"} origin-left duration-200`}>
+                {Menu.title}
+              </span>
+            </li>
+          </Link>
         ))}
       </ul>
     </div>
