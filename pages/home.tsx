@@ -5,12 +5,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { ref, listAll, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 
+export type themeType = {
+  primary: string;
+  secondary: string;
+  accent: string;
+  text: string;
+  secondaryText?: string;
+};
+
+const theme2 = {
+  primary: "#1D267D",
+  secondary: "#5C469C",
+  accent: "#D4ADFC",
+  text: "#FFFFF",
+  secondaryText: "#FFFFFF",
+};
+const theme1 = {
+  primary: "#FFFFFF",
+  secondary: "#f2f2f2",
+  accent: "#D0D0D0",
+  text: "#FFFFFF",
+  secondaryText: "#4B5563",
+};
+
 function Home() {
+  const [theme, setTheme] = useState<themeType>({
+    ...theme1,
+  });
   const [data, setData] = useState<datatype[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
+    setLoading(true);
     const getData = () => {
       const Data: datatype[] = [];
       const listRef = ref(storage, "images");
@@ -22,7 +50,10 @@ function Home() {
               name: "image",
               url,
             });
-            setData([...Data]);
+            if (Data.length === res.items.length) {
+              setData(Data);
+              setLoading(false);
+            }
           });
         });
       });
@@ -31,12 +62,22 @@ function Home() {
   }, []);
 
   return (
-    <div className="w-full max-h-[100vh] overflow-auto bg-white">
+    <div className={`w-full max-h-[100vh] overflow-auto bg-[${theme.primary}]`}>
       <div className="flex flex-wrap justify-evenly p-2">
         <Searchbar />
-        <RecentImages data={data.slice(0, 4)} title="Recent Images" />
-        <RecentFiles />
-        <RecentImages data={data.slice(4)} title="Images" />
+        <RecentImages
+          data={data.slice(0, 4)}
+          loadingState={loading}
+          theme={theme}
+          title="Recent Images"
+        />
+        <RecentFiles theme={theme} />
+        <RecentImages
+          data={data.slice(4)}
+          theme={theme}
+          loadingState={loading}
+          title="Images"
+        />
       </div>
     </div>
   );
@@ -50,43 +91,93 @@ export type datatype = {
 export const RecentImages = ({
   data,
   title,
+  theme,
+  loadingState,
 }: {
   data: datatype[];
+  loadingState: boolean;
   title: string;
+  theme: themeType;
 }) => {
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   return (
-    <div className="w-full h-full">
-      <h1 className="font-medium py-5 px-7 ">{title}</h1>
-      <div className="flex flex-wrap px-5 gap-9">
-        {data.map((item) => (
-          <div
-            className="w-[23%] bg-gray-100 hover:bg-[#DCDCDC] rounded-lg focus:ring-4 focus:outline-none"
-            key={item.id}
-          >
-            <Link href={`/image/${item.id}`}>
-              <div className="w-full h-60">
-                <div className="h-1/6  w-full  z-10 flex justify-between px-5 capitalize items-center">
-                  {item.name}
-                  <div>:</div>
-                </div>
-                <div className="h-5/6 relative  w-full z-10 ">
-                  <Image
-                    src={item.url}
-                    fill
-                    className="object-cover rounded-b-lg "
-                    alt="test"
-                  />
+    <>
+      {loadingState ? (
+        // create skeleton loader
+        <div className="w-full h-full">
+          <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+            {title}
+          </h1>
+          <div className="flex flex-wrap px-5 gap-9">
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                className={`w-[23%] bg-[${theme.secondary}]
+                text-[${theme.secondaryText}]
+                hover:bg-[${theme.accent}]
+                rounded-lg focus:ring-4 focus:outline-none`}
+                key={item}
+              >
+                <div className="w-full h-60 p-2">
+                  <div className="h-1/6  w-full  z-10 flex justify-between capitalize items-center">
+                    <div className="bg-gray-300 h-5 w-1/2 rounded-lg"></div>
+                    <div>:</div>
+                  </div>
+                  <div className="h-5/6 relative  w-full z-10 ">
+                    <div className="bg-gray-300 h-full w-full rounded-lg"></div>
+                  </div>
                 </div>
               </div>
-            </Link>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <div className="w-full h-full">
+          <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+            {title}
+          </h1>
+
+          <div className="flex flex-wrap px-5 gap-9">
+            {data.map((item) => (
+              <div
+                className={`w-[23%] bg-[${theme.secondary}]
+                text-[${theme.secondaryText}]
+                hover:bg-[${theme.accent}]
+                rounded-lg focus:ring-4 focus:outline-none`}
+                key={item.id}
+              >
+                {/* <Link href={`/image/${item.id}`}> */}
+                <div className="w-full h-60 p-2">
+                  <div className="h-1/6  w-full  z-10 flex justify-between px-2 capitalize items-center">
+                    {item.name}
+                    <div>:</div>
+                  </div>
+                  <div className="h-5/6 relative  w-full z-10 ">
+                    <Image
+                      src={item.url}
+                      fill
+                      onClick={() => {
+                        window.open(item.url);
+                      }}
+                      placeholder="blur"
+                      blurDataURL="/logo.png"
+                      className="object-cover rounded-lg "
+                      alt="test"
+                    />
+                  </div>
+                </div>
+                {/* </Link> */}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
-export const RecentFiles = () => {
+export const RecentFiles = ({ theme }: { theme: themeType }) => {
   const data = [
     {
       id: 1,
@@ -107,22 +198,26 @@ export const RecentFiles = () => {
   ];
   return (
     <div className="w-full h-full">
-      <h1 className="font-medium py-5 px-7 ">Recent Files</h1>
+      <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+        RecentFiles
+      </h1>
+
       <div className="flex flex-wrap px-5 gap-3">
         {data.map((item) => (
           <div key={item.id}>
             <Link href={`/image/${item.id}`}>
               <button
                 type="button"
-                className="inline-flex border border-[#f1f1f1] items-center justify-evenly w-[10vw] px-6 py-2 text-sm font-medium  text-black bg-[#f2f2f2] rounded-lg hover:bg-[#DCDCDC] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className={`inline-flex border border-transparent 
+                items-center justify-evenly w-[10vw] px-6 py-2 
+                text-sm font-medium  text-[${theme.secondaryText}]
+                bg-[${theme.secondary}] 
+                rounded-lg hover:bg-[${theme.accent}] focus:outline-none`}
               >
-                <span className="inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full">
-                  <Image
-                    alt="folder"
-                    fill
-                    className="invert"
-                    src="/Folder.png"
-                  />
+                <span
+                  className={`inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full`}
+                >
+                  <Image alt="folder" fill src="/file.svg" />
                 </span>
                 {item.name}
               </button>

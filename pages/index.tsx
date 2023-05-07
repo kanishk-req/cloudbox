@@ -47,23 +47,41 @@ const Sidebar = ({
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
   ];
   const [dark, setDark] = useState(false);
+  const sidebar2 = {
+    primary: "black",
+    hover: "blue",
+    text: "white",
+    invertImage: false,
+  };
+
+  const [theme, setTheme] = useState({
+    sidebar: {
+      // primary: "#E0E0E0",
+      // hover: "#f1f1f1",
+      // text: "black",
+      // invertImage: true,
+      ...sidebar2,
+    },
+  });
 
   return (
     <div
-      className={` ${open ? "w-72" : "w-20 "} ${
-        dark ? "bg-black" : "bg-[#E0E0E0]"
-      } h-screen p-5 pt-8 relative`}
+      className={` ${
+        open ? "w-72" : "w-20 "
+      } bg-[${theme.sidebar.primary}] h-screen p-5 pt-8 relative`}
     >
       <div className="flex gap-x-4 items-center">
         <img
           src="/logo.png"
-          className={`cursor-pointer ${dark ? "invert-0" : "invert"}`}
+          className={`cursor-pointer ${
+            theme.sidebar.invertImage ? "invert" : ""
+          }`}
           onClick={() => setOpen(!open)}
         />
         <h1
-          className={`${
-            dark ? "text-white" : "text-black"
-          } origin-left font-medium text-xl duration-200 ${!open && "hidden"}`}
+          className={`text-[${
+            theme.sidebar.text
+          }] origin-left font-medium text-xl duration-200 ${!open && "hidden"}`}
         >
           Cloud Box
         </h1>
@@ -72,16 +90,17 @@ const Sidebar = ({
         {Menus.map((Menu, index) => (
           <Link href={Menu?.link ?? ""} key={index}>
             <li
-              className={`flex p-2 cursor-pointer rounded-full hover:bg-[#f1f1f1] ${
-                dark ? "text-white" : "text-black"
-              } text-sm items-center gap-x-4 
+              className={`flex p-2 cursor-pointer rounded-full hover:bg-[${
+                theme.sidebar.hover
+              }]
+              text-[${theme.sidebar.text}] text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
             >
               <img
                 src={`/${Menu.src}.png`}
-                className={`${dark ? "invert-0" : "invert"}`}
+                className={`${theme.sidebar.invertImage ? "invert" : ""}`}
               />
               <span className={`${!open && "hidden"} origin-left duration-200`}>
                 {Menu.title}
