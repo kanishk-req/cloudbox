@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useState } from "react";
-
+import Styled from "styled-components";
 import Image from "next/image";
 import ImageView from "./Imageviewer";
 import Home from "./home";
@@ -28,6 +28,12 @@ function Index() {
 
 export default Index;
 
+const Li = Styled.li`
+  &:hover {
+    background-color: ${({ color }: { color?: string }) => color};
+  }
+`;
+
 const Sidebar = ({
   open,
   setOpen,
@@ -46,42 +52,45 @@ const Sidebar = ({
     { title: "Setting", src: "Setting" },
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
   ];
-  const [dark, setDark] = useState(false);
   const sidebar2 = {
     primary: "black",
-    hover: "blue",
+    hover: "#f1f1f1",
     text: "white",
     invertImage: false,
   };
-
+  const sidebar1 = {
+    primary: "#E0E0E0",
+    hover: "#f1f1f1",
+    text: "black",
+    invertImage: true,
+  };
   const [theme, setTheme] = useState({
     sidebar: {
-      // primary: "#E0E0E0",
-      // hover: "#f1f1f1",
-      // text: "black",
-      // invertImage: true,
-      ...sidebar2,
+      ...sidebar1,
     },
   });
 
   return (
     <div
-      className={` ${
-        open ? "w-72" : "w-20 "
-      } bg-[${theme.sidebar.primary}] h-screen p-5 pt-8 relative`}
+      className={` ${open ? "w-72" : "w-20 "} h-screen p-5 pt-8 relative`}
+      style={{
+        backgroundColor: theme.sidebar.primary,
+        color: theme.sidebar.text,
+      }}
     >
       <div className="flex gap-x-4 items-center">
         <img
           src="/logo.png"
-          className={`cursor-pointer ${
-            theme.sidebar.invertImage ? "invert" : ""
-          }`}
+          className={`cursor-pointer`}
+          style={{
+            filter: `invert(${theme.sidebar.invertImage ? "1" : "0"})`,
+          }}
           onClick={() => setOpen(!open)}
         />
         <h1
-          className={`text-[${
-            theme.sidebar.text
-          }] origin-left font-medium text-xl duration-200 ${!open && "hidden"}`}
+          className={`origin-left font-medium text-xl duration-200 ${
+            !open && "hidden"
+          }`}
         >
           Cloud Box
         </h1>
@@ -89,23 +98,22 @@ const Sidebar = ({
       <ul className="pt-6">
         {Menus.map((Menu, index) => (
           <Link href={Menu?.link ?? ""} key={index}>
-            <li
-              className={`flex p-2 cursor-pointer rounded-full hover:bg-[${
-                theme.sidebar.hover
-              }]
-              text-[${theme.sidebar.text}] text-sm items-center gap-x-4 
+            <Li
+              color={theme.sidebar.hover}
+              className={`flex p-2 cursor-pointer rounded-full
+              text-sm items-center gap-x-4 
               ${Menu.gap ? "mt-9" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
             >
               <img
                 src={`/${Menu.src}.png`}
-                className={`${theme.sidebar.invertImage ? "invert" : ""}`}
+                style={{
+                  filter: `invert(${theme.sidebar.invertImage ? "1" : "0"})`,
+                }}
               />
-              <span className={`${!open && "hidden"} origin-left duration-200`}>
-                {Menu.title}
-              </span>
-            </li>
+              <span className={`${!open && "hidden"}`}>{Menu.title}</span>
+            </Li>
           </Link>
         ))}
       </ul>
