@@ -2,13 +2,13 @@
 /* eslint-disable jsx-a11y/alt-text */
 // eslint-disable-next-line @next/next/no-img-element
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Styled from "styled-components";
-import Image from "next/image";
 import ImageView from "./Imageviewer";
 import Home from "./home";
 import Link from "next/link";
+
 function Index() {
   const [open, setOpen] = useState(true);
   return (
@@ -27,12 +27,6 @@ function Index() {
 }
 
 export default Index;
-
-const Li = Styled.li`
-  &:hover {
-    background-color: ${({ color }: { color?: string }) => color};
-  }
-`;
 
 const Sidebar = ({
   open,
@@ -120,3 +114,9 @@ const Sidebar = ({
     </div>
   );
 };
+
+const Li = Styled.li`
+  &:hover {
+    background-color: ${({ color }: { color?: string }) => color};
+  }
+`;

@@ -5,8 +5,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import storage from "@/firebase/storage";
+import styled from "styled-components";
+
+export const Div = styled.div`
+  background-color: ${({ color }: { color?: string }) => color};
+`;
 
 export type themeType = {
   primary: string;
@@ -17,10 +20,10 @@ export type themeType = {
 };
 
 const theme2 = {
-  primary: "#1D267D",
-  secondary: "#5C469C",
+  primary: "#36454F",
+  secondary: "#696969",
   accent: "#D4ADFC",
-  text: "#FFFFF",
+  text: "#FFFFFF",
   secondaryText: "#FFFFFF",
 };
 const theme1 = {
@@ -37,32 +40,16 @@ function Home() {
   });
   const [data, setData] = useState<datatype[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    setLoading(true);
-    const getData = () => {
-      const Data: datatype[] = [];
-      const listRef = ref(storage, "images");
-      listAll(listRef).then((res) => {
-        res.items.forEach((itemRef) => {
-          getDownloadURL(itemRef).then((url) => {
-            Data.push({
-              id: Data.length + 1,
-              name: "image",
-              url,
-            });
-            if (Data.length === res.items.length) {
-              setData(Data);
-              setLoading(false);
-            }
-          });
-        });
-      });
-    };
-    getData();
-  }, []);
+
+  useEffect(() => {}, []);
 
   return (
-    <div className={`w-full max-h-[100vh] overflow-auto bg-[${theme.primary}]`}>
+    <div
+      className={`w-full max-h-[100vh] overflow-auto`}
+      style={{
+        backgroundColor: theme.primary,
+      }}
+    >
       <div className="flex flex-wrap justify-evenly p-2">
         <Searchbar />
         <RecentImages
@@ -73,7 +60,7 @@ function Home() {
         />
         <RecentFiles theme={theme} />
         <RecentImages
-          data={data.slice(4)}
+          data={data}
           theme={theme}
           loadingState={loading}
           title="Images"
@@ -107,16 +94,22 @@ export const RecentImages = ({
       {loadingState ? (
         // create skeleton loader
         <div className="w-full h-full">
-          <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+          <h1
+            className={`font-medium py-5 px-7`}
+            style={{
+              color: theme.text,
+            }}
+          >
             {title}
           </h1>
           <div className="flex flex-wrap px-5 gap-9">
             {[1, 2, 3, 4].map((item) => (
-              <div
-                className={`w-[23%] bg-[${theme.secondary}]
-                text-[${theme.secondaryText}]
-                hover:bg-[${theme.accent}]
-                rounded-lg focus:ring-4 focus:outline-none`}
+              <Div
+                className={`w-[23%] rounded-lg focus:ring-4 focus:outline-none`}
+                style={{
+                  backgroundColor: theme.secondary,
+                  color: theme.secondaryText,
+                }}
                 key={item}
               >
                 <div className="w-full h-60 p-2">
@@ -128,24 +121,30 @@ export const RecentImages = ({
                     <div className="bg-gray-300 h-full w-full rounded-lg"></div>
                   </div>
                 </div>
-              </div>
+              </Div>
             ))}
           </div>
         </div>
       ) : (
         <div className="w-full h-full">
-          <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+          <h1
+            className={`font-medium py-5 px-7`}
+            style={{
+              color: theme.text,
+            }}
+          >
             {title}
           </h1>
 
           <div className="flex flex-wrap px-5 gap-9">
-            {data.map((item) => (
-              <div
-                className={`w-[23%] bg-[${theme.secondary}]
-                text-[${theme.secondaryText}]
-                hover:bg-[${theme.accent}]
-                rounded-lg focus:ring-4 focus:outline-none`}
-                key={item.id}
+            {data.map((item, index) => (
+              <Div
+                key={index}
+                className={`w-[23%] rounded-lg focus:ring-4 focus:outline-none`}
+                style={{
+                  backgroundColor: theme.secondary,
+                  color: theme.secondaryText,
+                }}
               >
                 {/* <Link href={`/image/${item.id}`}> */}
                 <div className="w-full h-60 p-2">
@@ -168,7 +167,7 @@ export const RecentImages = ({
                   </div>
                 </div>
                 {/* </Link> */}
-              </div>
+              </Div>
             ))}
           </div>
         </div>
@@ -198,7 +197,12 @@ export const RecentFiles = ({ theme }: { theme: themeType }) => {
   ];
   return (
     <div className="w-full h-full">
-      <h1 className={`font-medium py-5 px-7 text-[${theme.text}]`}>
+      <h1
+        className={`font-medium py-5 px-7 `}
+        style={{
+          color: theme.text,
+        }}
+      >
         RecentFiles
       </h1>
 
@@ -210,9 +214,12 @@ export const RecentFiles = ({ theme }: { theme: themeType }) => {
                 type="button"
                 className={`inline-flex border border-transparent 
                 items-center justify-evenly w-[10vw] px-6 py-2 
-                text-sm font-medium  text-[${theme.secondaryText}]
-                bg-[${theme.secondary}] 
-                rounded-lg hover:bg-[${theme.accent}] focus:outline-none`}
+                text-sm font-medium  
+                rounded-lg focus:outline-none`}
+                style={{
+                  backgroundColor: theme.secondary,
+                  color: theme.secondaryText,
+                }}
               >
                 <span
                   className={`inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full`}
@@ -229,7 +236,9 @@ export const RecentFiles = ({ theme }: { theme: themeType }) => {
   );
 };
 
+import { useAuth } from "./contexts/auth";
 export const Searchbar = () => {
+  const { user } = useAuth();
   return (
     <div className="w-full h-20 px-5 py-2 flex flex-row">
       <div className="w-1/2 h-full">
@@ -284,12 +293,25 @@ export const Searchbar = () => {
       </div>
       <div className="w-1/2 h-full flex justify-end">
         <div>
-          <button
-            type="submit"
-            className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500"
-          >
-            <Image src={"/user.svg"} alt="user" fill className="invert" />
-          </button>
+          <Link href="/login">
+            <button className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500">
+              {user?.photoURL ? (
+                <Image
+                  src={user?.photoURL}
+                  alt="user"
+                  fill
+                  className="object-cover rounded-full"
+                />
+              ) : (
+                <Image
+                  src={"/user.svg"}
+                  alt="user"
+                  fill
+                  className="invert object-cover rounded-full"
+                />
+              )}
+            </button>
+          </Link>
         </div>
       </div>
     </div>
