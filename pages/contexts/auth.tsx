@@ -1,4 +1,6 @@
 import auth from "@/firebase/auth";
+import db from "@/firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import {
   User,
   signInWithEmailAndPassword,
@@ -40,8 +42,28 @@ export default function AuthProvider({
       setUser(user);
       setLoading(false);
     });
+    if (!user) return unsubscribe;
+    const CreateUserDoc = async () => {
+      const customId = `${user.uid}`;
+      const userDocRef = doc(db, "User", customId);
+      const userDocSnapshot = await getDoc(userDocRef);
+      if (userDocSnapshot.exists()) {
+        console.log("Document already exists with ID: ", customId);
+      } else {
+        await setDoc(userDocRef, {
+          name: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          emailVerified: user.emailVerified,
+          photoURL: user.photoURL,
+          phoneNumber: user.phoneNumber,
+        });
+        console.log("Document written with ID: ", customId);
+      }
+    };
+    CreateUserDoc();
     return unsubscribe;
-  }, []);
+  }, [user]);
   const signIn = async (email: string, password: string) => {
     try {
       signInWithEmailAndPassword(auth, email, password);
