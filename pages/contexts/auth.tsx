@@ -1,6 +1,7 @@
 import auth from "@/firebase/auth";
 import db from "@/firebase/firestore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 import {
   User,
   signInWithEmailAndPassword,
@@ -16,6 +17,7 @@ type authContextType = {
   signIn: (email: string, password: string) => void;
   signUp: (email: string, password: string) => void;
   signOut: () => void;
+  UpdateUserDetails: (name: string, photoURL: string) => void;
 };
 
 const AuthContext = createContext<authContextType>({
@@ -25,6 +27,7 @@ const AuthContext = createContext<authContextType>({
   signIn: () => {},
   signUp: () => {},
   signOut: () => {},
+  UpdateUserDetails: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -64,6 +67,32 @@ export default function AuthProvider({
     CreateUserDoc();
     return unsubscribe;
   }, [user]);
+
+  const UpdateUserDetails = async (name: string, photoURL: string) => {
+    try {
+      const UserDetails = {
+        name: name,
+        photoURL: photoURL,
+      };
+      const customId = `${user?.uid}`;
+      const userDocRef = doc(db, "User", customId);
+      await setDoc(userDocRef, UserDetails, { merge: true });
+      updateProfile(auth.currentUser!, {
+        displayName: name,
+        photoURL: photoURL,
+      })
+        .then(() => {
+          console.log("User Details Updated");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      console.log("User Details Updated", user);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
   const signIn = async (email: string, password: string) => {
     try {
       signInWithEmailAndPassword(auth, email, password);
@@ -92,6 +121,7 @@ export default function AuthProvider({
     signIn,
     signUp,
     signOut,
+    UpdateUserDetails,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

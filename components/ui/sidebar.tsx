@@ -7,13 +7,8 @@ import { useState } from "react";
 import Styled from "styled-components";
 import Link from "next/link";
 
-const Sidebar = ({
-  open,
-  setOpen,
-}: {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const Sidebar = () => {
+  const [open, setOpen] = useState(true);
   const Menus = [
     { title: "Home", src: "Chart_fill", link: "" },
     { title: "Images", src: "Chat" },

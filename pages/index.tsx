@@ -19,7 +19,7 @@ function Index() {
         flexDirection: "row",
       }}
     >
-      <Sidebar open={open} setOpen={setOpen} />
+      <Sidebar />
       <Home />
     </div>
   );
