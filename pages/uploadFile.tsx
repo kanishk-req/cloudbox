@@ -14,7 +14,7 @@ function UploadFile() {
   if (!user) {
     return <Login />;
   }
-  return <Upload location="file" />;
+  return <Upload location="Home" />;
 }
 
 export default UploadFile;

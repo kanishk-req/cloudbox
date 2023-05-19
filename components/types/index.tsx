@@ -1,6 +1,9 @@
 export type datatype = {
-  id: number;
+  date: string;
+  location: string;
   name: string;
+  size: number;
+  type: string;
   url: string;
 };
 

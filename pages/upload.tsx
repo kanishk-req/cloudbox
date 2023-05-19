@@ -16,12 +16,12 @@ function UploadFile({ location }: { location: string }) {
     async (downloadURL: string) => {
       try {
         await addDoc(collection(db, `Data/${user?.uid}/${Path}`), {
-          lastModified: new Date().toDateString(),
           name: file?.name,
           size: file?.size,
           location: location,
           type: file?.type,
           url: downloadURL,
+          date: new Date().toDateString(),
         });
         console.log("Document successfully written!");
         setProgress(0);
@@ -61,6 +61,7 @@ function UploadFile({ location }: { location: string }) {
     if (!file) return;
     uploadFileToStorage();
   }, [file]);
+
   return (
     <div className="flex flex-col items-center justify-center h-[100vh]">
       <div className="flex items-center justify-center w-full">

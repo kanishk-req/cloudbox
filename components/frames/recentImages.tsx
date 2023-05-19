@@ -76,7 +76,7 @@ const RecentImages = ({
                 {/* <Link href={`/image/${item.id}`}> */}
                 <div className="w-full h-60 p-2">
                   <div className="h-1/6  w-full  z-10 flex justify-between px-2 capitalize items-center">
-                    {item.name}
+                    {item.date}
                     <div>:</div>
                   </div>
                   <div className="h-5/6 relative  w-full z-10 ">
