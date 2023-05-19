@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import storage from "@/firebase/storage";
 import { useAuth } from "./contexts/auth";
 import Upload from "./upload";
-import Login from "./Login";
+import Login from "./login";
 
 function UploadFile() {
   const { user } = useAuth();

@@ -59,25 +59,29 @@ const Searchbar = () => {
       </div>
       <div className="w-1/2 h-full flex justify-end">
         <div>
-          <Link href="/login">
-            <button className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500">
-              {user?.photoURL ? (
+          {user ? (
+            <Link href="/profile">
+              <button className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500">
                 <Image
-                  src={user?.photoURL}
+                  src={user?.photoURL ?? "/activeUser.svg"}
                   alt="user"
                   fill
                   className="object-cover rounded-full"
                 />
-              ) : (
+              </button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <button className="p-6 text-sm font-medium relative text-white bg-black rounded-full  hover:bg-slate-500">
                 <Image
-                  src={"/user.svg"}
+                  src="/user.svg"
                   alt="user"
                   fill
-                  className="invert object-cover rounded-full"
+                  className="object-cover rounded-full"
                 />
-              )}
-            </button>
-          </Link>
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
