@@ -1,11 +1,11 @@
-export type datatype = {
+export interface datatype {
   date: string;
   location: string;
   name: string;
   size: number;
   type: string;
   url: string;
-};
+}
 
 export type themeType = {
   primary: string;
@@ -14,3 +14,8 @@ export type themeType = {
   text: string;
   secondaryText?: string;
 };
+
+export interface imageType {
+  date: string;
+  data: datatype[];
+}

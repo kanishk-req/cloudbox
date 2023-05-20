@@ -10,8 +10,8 @@ import Link from "next/link";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const Menus = [
-    { title: "Home", src: "Chart_fill", link: "" },
-    { title: "Images", src: "Chat" },
+    { title: "Home", src: "Chart_fill", link: "/" },
+    { title: "Images", src: "Chat", link: "/images" },
     { title: "Documents", src: "User" },
     { title: "Files", src: "Folder" },
     { title: "Smart Share", src: "Calendar", gap: true },
