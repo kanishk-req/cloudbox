@@ -17,26 +17,10 @@ import {
   where,
 } from "firebase/firestore";
 import db from "@/firebase/firestore";
-
-const theme2 = {
-  primary: "#36454F",
-  secondary: "#696969",
-  accent: "#D4ADFC",
-  text: "#FFFFFF",
-  secondaryText: "#FFFFFF",
-};
-const theme1 = {
-  primary: "#FFFFFF",
-  secondary: "#f2f2f2",
-  accent: "#D0D0D0",
-  text: "#000000",
-  secondaryText: "#4B5563",
-};
+import { useTheme } from "./contexts/theme";
 
 function Home() {
-  const [theme, setTheme] = useState<themeType>({
-    ...theme1,
-  });
+  const { theme } = useTheme();
   const [data, setData] = useState<datatype[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();

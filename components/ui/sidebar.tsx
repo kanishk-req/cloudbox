@@ -6,8 +6,10 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Styled from "styled-components";
 import Link from "next/link";
+import { useTheme } from "@/pages/contexts/theme";
 
 const Sidebar = () => {
+  const { sidebar } = useTheme();
   const [open, setOpen] = useState(true);
   const Menus = [
     { title: "Home", src: "Chart_fill", link: "/" },
@@ -20,30 +22,13 @@ const Sidebar = () => {
     { title: "Setting", src: "Setting" },
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
   ];
-  const sidebar2 = {
-    primary: "black",
-    hover: "#f1f1f1",
-    text: "white",
-    invertImage: false,
-  };
-  const sidebar1 = {
-    primary: "#E0E0E0",
-    hover: "#f1f1f1",
-    text: "black",
-    invertImage: true,
-  };
-  const [theme, setTheme] = useState({
-    sidebar: {
-      ...sidebar1,
-    },
-  });
 
   return (
     <div
       className={` ${open ? "w-72" : "w-20 "} h-screen p-5 pt-8 relative`}
       style={{
-        backgroundColor: theme.sidebar.primary,
-        color: theme.sidebar.text,
+        backgroundColor: sidebar.primary,
+        color: sidebar.text,
       }}
     >
       <div className="flex gap-x-4 items-center">
@@ -51,7 +36,7 @@ const Sidebar = () => {
           src="/logo.png"
           className={`cursor-pointer`}
           style={{
-            filter: `invert(${theme.sidebar.invertImage ? "1" : "0"})`,
+            filter: `invert(${sidebar.invertImage ? "1" : "0"})`,
           }}
           onClick={() => setOpen(!open)}
         />
@@ -67,7 +52,7 @@ const Sidebar = () => {
         {Menus.map((Menu, index) => (
           <Link href={Menu?.link ?? ""} key={index}>
             <Li
-              color={theme.sidebar.hover}
+              color={sidebar.hover}
               className={`flex p-2 cursor-pointer rounded-full
                 text-sm items-center gap-x-4 
                 ${Menu.gap ? "mt-9" : "mt-2"} ${
@@ -77,7 +62,7 @@ const Sidebar = () => {
               <img
                 src={`/${Menu.src}.png`}
                 style={{
-                  filter: `invert(${theme.sidebar.invertImage ? "1" : "0"})`,
+                  filter: `invert(${sidebar.invertImage ? "1" : "0"})`,
                 }}
               />
               <span className={`${!open && "hidden"}`}>{Menu.title}</span>
