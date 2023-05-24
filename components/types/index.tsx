@@ -19,3 +19,8 @@ export interface imageType {
   date: string;
   data: datatype[];
 }
+
+export interface fileType {
+  date: string;
+  data: datatype[];
+}
