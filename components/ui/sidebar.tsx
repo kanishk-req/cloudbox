@@ -16,7 +16,7 @@ const Sidebar = () => {
     { title: "Images", src: "Chat", link: "/images" },
     { title: "Documents", src: "User", link: "/documents" },
     { title: "Files", src: "Folder" },
-    { title: "Smart Share", src: "Calendar", gap: true },
+    { title: "Smart Share", src: "Calendar", gap: true, link: "/smartshare" },
     { title: "Api", src: "Search" },
     { title: "Storage", src: "Chart" },
     { title: "Setting", src: "Setting" },

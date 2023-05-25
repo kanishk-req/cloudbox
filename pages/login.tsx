@@ -1,12 +1,15 @@
 import React, { useRef } from "react";
 import AuthProvider, { useAuth } from "./contexts/auth";
+import { useEffect } from "react";
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { user, loading, error, signIn, signUp, signOut } = useAuth();
+  const [SignInStatus, setSignInStatus] = React.useState(false);
+  const { user, loading, error, signIn, signUp } = useAuth();
   console.log(user, loading, error);
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(emailRef.current?.value, passwordRef.current?.value);
     try {
       if (emailRef.current && passwordRef.current) {
         signIn(emailRef.current.value, passwordRef.current.value);
@@ -18,6 +21,10 @@ function Login() {
       passwordRef.current!.value = "";
     }
   };
+  useEffect(() => {
+    if (!user) return;
+    window.location.href = "/";
+  }, [user]);
 
   return (
     <AuthProvider>
@@ -26,11 +33,11 @@ function Login() {
         <div className="py-12 px-12 bg-white rounded-2xl shadow-xl z-20">
           <div>
             <h1 className="text-3xl font-bold text-center mb-4 cursor-pointer">
-              Create An Account
+              {SignInStatus ? "Create An Account" : "Sign In"}
             </h1>
             <p className="w-80 text-center text-sm mb-8 font-semibold text-gray-700 tracking-wide cursor-pointer">
-              Create an account to enjoy all the services without any ads for
-              free!
+              {SignInStatus &&
+                "Create an account to enjoy all the services without any ads for free!"}
             </p>
           </div>
           <form onSubmit={handleSignUp}>
@@ -54,11 +61,18 @@ function Login() {
                 type="submit"
                 className="py-3 w-64 text-xl text-white bg-[#FF7F50] rounded-2xl"
               >
-                Create Account
+                {SignInStatus ? "Create Account" : "Sign In"}
               </button>
               <p className="mt-4 text-sm">
-                Already Have An Account?{" "}
-                <span className="underline cursor-pointer"> Sign In</span>
+                {SignInStatus
+                  ? "Already Have An Account?"
+                  : "Don't Have An Account?"}
+                <span
+                  className="underline cursor-pointer"
+                  onClick={() => setSignInStatus(!SignInStatus)}
+                >
+                  {SignInStatus ? "Sign In" : "Create Account"}
+                </span>
               </p>
             </div>
           </form>
