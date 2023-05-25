@@ -77,7 +77,7 @@ const Searchbar = () => {
                   src="/user.svg"
                   alt="user"
                   fill
-                  className="object-cover rounded-full"
+                  className="object-cover rounded-full invert"
                 />
               </button>
             </Link>
