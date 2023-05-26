@@ -25,7 +25,7 @@ function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
   const getImageData = useCallback(async (id: string) => {
-    const collectionRef = collection(db, `Data/${id}/Images`);
+    const collectionRef = collection(db, `User/${id}/Images`);
     const Ref = query(
       collectionRef,
       orderBy("date", "desc"),

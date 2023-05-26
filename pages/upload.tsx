@@ -15,7 +15,7 @@ function UploadFile({ location }: { location: string }) {
   const uploadFileToFirestore = useCallback(
     async (downloadURL: string) => {
       try {
-        await addDoc(collection(db, `Data/${user?.uid}/${Path}`), {
+        await addDoc(collection(db, `User/${user?.uid}/${Path}`), {
           name: file?.name,
           size: file?.size,
           location: location,
@@ -34,7 +34,7 @@ function UploadFile({ location }: { location: string }) {
   );
 
   const uploadFileToStorage = useCallback(async () => {
-    const storageRef = ref(storage, `${Path}/${user?.uid}/${file?.name}`);
+    const storageRef = ref(storage, `${user?.uid}/${Path}/${file?.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file!);
     uploadTask.on(
       "state_changed",

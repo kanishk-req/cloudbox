@@ -15,7 +15,7 @@ function Documents() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const getImageData = useCallback(async (id: string) => {
-    const collectionRef = collection(db, `Data/${id}/Files`);
+    const collectionRef = collection(db, `User/${id}/Files`);
     const Ref = query(
       collectionRef,
       orderBy("date", "asc"),

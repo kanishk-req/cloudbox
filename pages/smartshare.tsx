@@ -68,7 +68,8 @@ function Smartshare() {
     e.preventDefault();
     if (!file) return;
     if (!name.current?.value) return alert("Please enter a name");
-    // console.log("Output:", name.current?.value, " :", [...urls]);
+    uploadFileToStorage(name.current.value);
+
     setUrl([]);
     name.current.value = "";
   };

@@ -5,10 +5,12 @@
 import React, { useEffect, useState } from "react";
 import Styled from "styled-components";
 import Home from "./home";
+import Login from "./login";
 import Sidebar from "@/components/ui/sidebar";
-
+import { useAuth } from "./contexts/auth";
 function Index() {
-  const [open, setOpen] = useState(true);
+  const { user } = useAuth();
+
   return (
     <div
       style={{

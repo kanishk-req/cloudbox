@@ -16,7 +16,7 @@ const RecentImages = ({
 }) => {
   return (
     <>
-      {loadingState ? (
+      {loadingState || data.length <= 0 ? (
         <div className="w-full h-full">
           <h1
             className={`font-medium py-5 px-7`}
@@ -97,7 +97,7 @@ const RecentImages = ({
                         window.open(item.url);
                       }}
                       placeholder="blur"
-                      blurDataURL="/logo.png"
+                      blurDataURL="/image.png"
                       className="object-cover rounded-lg "
                       alt="test"
                     />
