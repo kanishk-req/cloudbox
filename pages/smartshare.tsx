@@ -28,7 +28,7 @@ function Smartshare() {
           url: downloadURL,
           date: new Date().toDateString(),
         });
-        console.log("Document successfully written!");
+        // console.log("Document successfully written!");
         // setProgress(0);
         setFile(null);
       } catch (error: any) {
@@ -68,7 +68,7 @@ function Smartshare() {
     e.preventDefault();
     if (!file) return;
     if (!name.current?.value) return alert("Please enter a name");
-    console.log("Output:", name.current?.value, " :", [...urls]);
+    // console.log("Output:", name.current?.value, " :", [...urls]);
     setUrl([]);
     name.current.value = "";
   };

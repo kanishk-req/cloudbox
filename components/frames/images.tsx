@@ -14,9 +14,6 @@ const RecentImages = ({
   title?: string;
   theme?: themeType;
 }) => {
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   return (
     <>
       {loadingState ? (
