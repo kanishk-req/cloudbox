@@ -2,8 +2,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 // eslint-disable-next-line @next/next/no-img-element
 
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Styled from "styled-components";
 import Home from "./home";
 import Sidebar from "@/components/ui/sidebar";

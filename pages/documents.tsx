@@ -38,7 +38,7 @@ function Documents() {
       }
     });
     setFiles(data);
-    console.log(data);
+    // console.log(data);
     setLoading(false);
   }, []);
   useEffect(() => {

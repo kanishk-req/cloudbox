@@ -23,7 +23,7 @@ function UploadFile({ location }: { location: string }) {
           url: downloadURL,
           date: new Date().toDateString(),
         });
-        console.log("Document successfully written!");
+        // console.log("Document successfully written!");
         setProgress(0);
         setFile(null);
       } catch (error: any) {

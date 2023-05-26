@@ -1,21 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import AuthProvider, { useAuth } from "./contexts/auth";
-import { useEffect } from "react";
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [SignInStatus, setSignInStatus] = React.useState(false);
   const { user, loading, error, signIn, signUp } = useAuth();
-  console.log(user, loading, error);
+  // console.log(user, loading, error);
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(emailRef.current?.value, passwordRef.current?.value);
+    // console.log(emailRef.current?.value, passwordRef.current?.value);
     try {
       if (emailRef.current && passwordRef.current) {
         signIn(emailRef.current.value, passwordRef.current.value);
       }
     } catch (error: any) {
-      console.log(error.message);
+      // console.log(error.message);
     } finally {
       emailRef.current!.value = "";
       passwordRef.current!.value = "";

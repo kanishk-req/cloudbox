@@ -7,10 +7,6 @@ import Login from "./login";
 
 function UploadFile() {
   const { user } = useAuth();
-  useEffect(() => {
-    console.log("User", user);
-  }, [user]);
-
   if (!user) {
     return <Login />;
   }

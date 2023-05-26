@@ -1,8 +1,8 @@
 import auth from "@/firebase/auth";
 import db from "@/firebase/firestore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { updateProfile } from "firebase/auth";
 import {
+  updateProfile,
   User,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -51,7 +51,7 @@ export default function AuthProvider({
       const userDocRef = doc(db, "User", customId);
       const userDocSnapshot = await getDoc(userDocRef);
       if (userDocSnapshot.exists()) {
-        console.log("Document already exists with ID: ", customId);
+        // console.log("Document already exists with ID: ", customId);
       } else {
         await setDoc(userDocRef, {
           name: user.displayName,
@@ -61,7 +61,7 @@ export default function AuthProvider({
           photoURL: user.photoURL,
           phoneNumber: user.phoneNumber,
         });
-        console.log("Document written with ID: ", customId);
+        // console.log("Document written with ID: ", customId);
       }
     };
     CreateUserDoc();
@@ -82,13 +82,13 @@ export default function AuthProvider({
         photoURL: photoURL,
       })
         .then(() => {
-          console.log("User Details Updated");
+          // console.log("User Details Updated");
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
 
-      console.log("User Details Updated", user);
+      // console.log("User Details Updated", user);
     } catch (error: any) {
       setError(error.message);
     }
