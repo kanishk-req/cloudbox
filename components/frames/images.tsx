@@ -97,7 +97,7 @@ const RecentImages = ({
                         window.open(item.url);
                       }}
                       placeholder="blur"
-                      blurDataURL="/logo.png"
+                      blurDataURL="/image.png"
                       className="object-cover rounded-lg "
                       alt="test"
                     />

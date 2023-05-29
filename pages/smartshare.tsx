@@ -17,17 +17,21 @@ function Smartshare() {
   const [dropDown, setDropDown] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [urls, setUrl] = useState<TempFilesData[]>([]);
+  const [result, setResult] = useState<string[]>([]);
   const { user } = useAuth();
   const uploadFileToFirestore = useCallback(
     async (downloadURL: string) => {
       try {
-        await addDoc(collection(db, `Data/${user?.uid}`), {
-          name: file?.name,
-          size: file?.size,
-          type: file?.type,
-          url: downloadURL,
-          date: new Date().toDateString(),
-        });
+        await addDoc(
+          collection(db, `User/${user?.uid}/smartshare-${name.current!.value}`),
+          {
+            name: file?.name,
+            size: file?.size,
+            type: file?.type,
+            url: downloadURL,
+            date: new Date().toDateString(),
+          }
+        );
         // console.log("Document successfully written!");
         // setProgress(0);
         setFile(null);
@@ -38,9 +42,12 @@ function Smartshare() {
     [file, user?.uid]
   );
   const uploadFileToStorage = useCallback(
-    async (name: string) => {
-      const storageRef = ref(storage, `smartshare/${user?.uid}/${name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file!);
+    async (folderName: string, name: string, file: File) => {
+      const storageRef = ref(
+        storage,
+        `smartshare/${user?.uid}/${folderName}/${name}`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -54,22 +61,27 @@ function Smartshare() {
         async () => {
           try {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            await uploadFileToFirestore(downloadURL);
+            setResult((prev) => [...prev, downloadURL]);
           } catch (error: any) {
             // setError(error.message);
           }
         }
       );
     },
-    [file, user?.uid, uploadFileToFirestore]
+    [user?.uid]
   );
   const name = useRef<HTMLInputElement>(null);
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
     if (!name.current?.value) return alert("Please enter a name");
-    uploadFileToStorage(name.current.value);
-
+    urls.forEach((url) => {
+      uploadFileToStorage(name.current!.value, url.file.name, url.file);
+    });
+    result.forEach((url) => {
+      uploadFileToFirestore(url);
+    });
+    setResult([]);
     setUrl([]);
     name.current.value = "";
   };
