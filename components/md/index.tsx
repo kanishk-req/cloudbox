@@ -1,10 +1,10 @@
 import Image from "next/image";
 export const Heading = {
   H1: ({ children }: { children: React.ReactNode }) => (
-    <h1 className="text-4xl py-6">{children}</h1>
+    <h1 className="text-4xl pt-2 pb-6">{children}</h1>
   ),
   H2: ({ children }: { children: React.ReactNode }) => (
-    <h2 className="text-2xl py-6">{children}</h2>
+    <h2 className="text-3xl py-6">{children}</h2>
   ),
 };
 
