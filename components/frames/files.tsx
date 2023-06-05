@@ -37,7 +37,7 @@ const RecentImages = ({
                 }}
                 key={item}
               >
-                <div className="w-full h-40 p-2">
+                <div className="w-full h-52 p-2">
                   <div className="h-1/6  w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg"></div>
                     <div>:</div>
@@ -72,13 +72,12 @@ const RecentImages = ({
                 }}
               >
                 {/* <Link href={`/image/${item.id}`}> */}
-                <div className="w-full h-40 p-2">
+                <div className="w-full h-52 p-2">
                   <div className="h-1/6  w-full  z-10 flex justify-between px-2 capitalize items-center">
                     {item.date}
                     <div>:</div>
                   </div>
-                  <div className="h-5/6 relative  w-full z-10 flex justify-center items-center flex-col">
-                    <p>{item.name}</p>
+                  <div className="h-5/6 relative gap-4 w-full z-10 flex justify-center items-center flex-col">
                     <button
                       type="button"
                       onClick={() => {
@@ -86,7 +85,7 @@ const RecentImages = ({
                       }}
                       className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 font-medium rounded-full text-sm px-6 py-2.5 mr-2 mb-2"
                     >
-                      View
+                      {item.name}
                     </button>
                   </div>
                 </div>

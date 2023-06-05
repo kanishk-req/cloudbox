@@ -13,8 +13,7 @@ const Sidebar = () => {
   const Menus = [
     { title: "Home", src: "Chart_fill", link: "/" },
     { title: "Images", src: "Chat", link: "/images" },
-    { title: "Documents", src: "User", link: "/documents" },
-    { title: "Files", src: "Folder" },
+    { title: "Files", src: "Folder", link: "/files" },
     { title: "Smart Share", src: "Calendar", gap: true, link: "/smartshare" },
     { title: "Api", src: "Search" },
     { title: "Storage", src: "Chart" },
