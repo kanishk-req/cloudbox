@@ -9,10 +9,10 @@ import { useAuth } from "./contexts/auth";
 import db from "@/firebase/firestore";
 import { addDoc, collection } from "firebase/firestore";
 
-export type TempFilesData = {
+export interface TempFilesData {
   file: File;
   url: string;
-};
+}
 function Smartshare() {
   const [dropDown, setDropDown] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
@@ -312,7 +312,13 @@ export const UploadImage = ({
   );
 };
 
-export const ImageStatus = ({ urls }: { urls: TempFilesData[] }) => {
+export const ImageStatus = ({
+  urls,
+  status = null,
+}: {
+  urls: TempFilesData[];
+  status?: number | null;
+}) => {
   return (
     <div className="px-[2vw] w-2/5 h-full">
       <h1 className="text-2xl text-gray-900 mb-4">Status</h1>
@@ -325,7 +331,15 @@ export const ImageStatus = ({ urls }: { urls: TempFilesData[] }) => {
               <div className="w-[90%] h-full bg-blue-200">
                 <input
                   type="text"
-                  value={url.file.name.split(".").slice(0, -1).join(".")}
+                  value={
+                    status === null
+                      ? url.file.name.split(".").slice(0, -1).join(".")
+                      : status === 0
+                      ? `Uploading ...`
+                      : status === 100
+                      ? url.file.name.split(".").slice(0, -1).join(".")
+                      : `${status} %`
+                  }
                   className="w-full h-full flex justify-center items-center p-2"
                 />
               </div>

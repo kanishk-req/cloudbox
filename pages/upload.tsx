@@ -5,11 +5,19 @@ import db from "@/firebase/firestore";
 import { useAuth } from "./contexts/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
+import { TempFilesData } from "./smartshare";
 
-function UploadFile({ location }: { location: string }) {
+function UploadFile({
+  location,
+  files,
+  status,
+}: {
+  location: string;
+  files: React.Dispatch<React.SetStateAction<TempFilesData[]>>;
+  status: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const { user } = useAuth();
-  const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const Path = file?.type.startsWith("image/") ? "Images" : "Files";
   const uploadFileToFirestore = useCallback(
@@ -24,7 +32,6 @@ function UploadFile({ location }: { location: string }) {
           date: new Date().toDateString(),
         });
         // console.log("Document successfully written!");
-        setProgress(0);
         setFile(null);
       } catch (error: any) {
         setError(error.message);
@@ -36,12 +43,20 @@ function UploadFile({ location }: { location: string }) {
   const uploadFileToStorage = useCallback(async () => {
     const storageRef = ref(storage, `${user?.uid}/${Path}/${file?.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file!);
+    const blobURL = URL.createObjectURL(file!);
+    files((prev) => [
+      ...prev,
+      {
+        file: file!,
+        url: blobURL,
+      },
+    ]);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(Math.round(progress));
+        status(Math.round(progress));
       },
       (error) => {
         setError(error.message);
@@ -63,11 +78,11 @@ function UploadFile({ location }: { location: string }) {
   }, [file]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-[100vh]">
+    <div className="flex flex-col items-center justify-center w-full">
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-[80vw] h-[50vh] md:w-[50vw] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+          className="flex flex-col items-center justify-center w-full h-[40vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
@@ -107,16 +122,6 @@ function UploadFile({ location }: { location: string }) {
           />
         </label>
       </div>
-      {progress > 0 && (
-        <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-          <div
-            className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-            style={{ width: `${progress}%` }}
-          >
-            {progress}%
-          </div>
-        </div>
-      )}
     </div>
   );
 }
