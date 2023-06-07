@@ -60,6 +60,12 @@ function Image() {
         data[index].data.push(docData);
       }
     });
+    // Sorting the data array
+    data.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB.getTime() - dateA.getTime();
+    });
     setImages(data);
     setLoading(false);
   }, []);
