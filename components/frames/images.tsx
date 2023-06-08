@@ -39,7 +39,14 @@ const RecentImages = ({
                 <div className="w-full h-60 p-2">
                   <div className="h-1/6 animate-pulse w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
-                    <div>:</div>
+                    <div>
+                      <Image
+                        src="/threeDotsVertical.svg"
+                        width={20}
+                        height={20}
+                        alt=":"
+                      />
+                    </div>
                   </div>
                   <div
                     role="status"
@@ -87,7 +94,15 @@ const RecentImages = ({
                 <div className="w-full h-60 p-2">
                   <div className="h-1/6  w-full  z-10 flex justify-between px-2 capitalize items-center">
                     {item.date}
-                    <div>:</div>
+                    <div>
+                      <Image
+                        src="/threeDotsVertical.svg"
+                        width={20}
+                        height={20}
+                        alt=":"
+                        className="hover:bg-gray-200 rounded-full hover:border-2 hover:border-gray-200"
+                      />
+                    </div>
                   </div>
                   <div className="h-5/6 relative  w-full z-10 ">
                     <Image

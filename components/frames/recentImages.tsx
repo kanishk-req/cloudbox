@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { datatype, themeType } from "@/components/types";
 import Image from "next/image";
 import styled from "styled-components";
@@ -14,6 +14,13 @@ const RecentImages = ({
   title: string;
   theme: themeType;
 }) => {
+  const [menu, setMenu] = useState<number>(-1);
+  const mouseEnter = (index: number) => {
+    setMenu(index);
+  };
+  const mouseLeave = () => {
+    setMenu(-1);
+  };
   return (
     <>
       {loadingState || data.length <= 0 ? (
@@ -39,7 +46,14 @@ const RecentImages = ({
                 <div className="w-full h-60 p-2">
                   <div className="h-1/6 animate-pulse w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
-                    <div>:</div>
+                    <div>
+                      <Image
+                        src="/threeDotsVertical.svg"
+                        width={20}
+                        height={20}
+                        alt=":"
+                      />
+                    </div>
                   </div>
                   <div
                     role="status"
@@ -85,10 +99,26 @@ const RecentImages = ({
               >
                 {/* <Link href={`/image/${item.id}`}> */}
                 <div className="w-full h-60 p-2">
-                  <div className="h-1/6  w-full  z-10 flex justify-between px-2 capitalize items-center">
+                  <div className="h-1/6  relative w-full  z-20 flex justify-between px-2 capitalize items-center">
                     {item.date}
-                    <div>:</div>
+                    <div>
+                      <Image
+                        src="/threeDotsVertical.svg"
+                        width={20}
+                        height={20}
+                        alt=":"
+                        onMouseLeave={() => mouseLeave()}
+                        onMouseEnter={() => mouseEnter(index)}
+                        className="hover:bg-gray-200 rounded-full hover:border-2 hover:border-gray-200"
+                      />
+                    </div>
+                    {index !== -1 && menu === index && (
+                      <div className="absolute top-10 right-0 bg-black">
+                        Test
+                      </div>
+                    )}
                   </div>
+
                   <div className="h-5/6 relative  w-full z-10 ">
                     <Image
                       src={item.url}
