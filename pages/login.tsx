@@ -11,7 +11,9 @@ function Login() {
     // console.log(emailRef.current?.value, passwordRef.current?.value);
     try {
       if (emailRef.current && passwordRef.current) {
-        signIn(emailRef.current.value, passwordRef.current.value);
+        if (!SignInStatus)
+          signIn(emailRef.current.value, passwordRef.current.value);
+        else signUp(emailRef.current.value, passwordRef.current.value);
       }
     } catch (error: any) {
       // console.log(error.message);
