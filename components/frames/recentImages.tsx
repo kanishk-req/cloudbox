@@ -15,11 +15,10 @@ const RecentImages = ({
   theme: themeType;
 }) => {
   const [menu, setMenu] = useState<number>(-1);
-  const mouseEnter = (index: number) => {
-    setMenu(index);
-  };
-  const mouseLeave = () => {
-    setMenu(-1);
+  const options = [{ name: "Open" }, { name: "Delete" }, { name: "share" }];
+  const handleClick = (index: number) => {
+    if (index !== menu) setMenu(index);
+    else setMenu(-1);
   };
   return (
     <>
@@ -107,14 +106,52 @@ const RecentImages = ({
                         width={20}
                         height={20}
                         alt=":"
-                        onMouseLeave={() => mouseLeave()}
-                        onMouseEnter={() => mouseEnter(index)}
+                        onClick={() => {
+                          handleClick(index);
+                        }}
                         className="hover:bg-gray-200 rounded-full hover:border-2 hover:border-gray-200"
                       />
                     </div>
                     {index !== -1 && menu === index && (
-                      <div className="absolute top-10 right-0 bg-black">
-                        Test
+                      <div
+                        className="absolute top-[2.5rem]  right-1  rounded-md w-[6rem] h-[6rem]"
+                        style={{
+                          backgroundColor: theme.secondary,
+                          color: theme.secondaryText,
+                        }}
+                      >
+                        {options.map((item, key) => (
+                          <div
+                            key={key}
+                            className="w-full h-1/3 flex justify-center items-center rounded-md"
+                          >
+                            <div
+                              className="w-full h-8 flex justify-center items-center hover:bg-gray-200 hover:text-gray-700"
+                              style={{
+                                borderTop:
+                                  key === options.length - 1
+                                    ? "1px solid lightgray"
+                                    : key === 0
+                                    ? "none"
+                                    : "1px solid lightgray",
+                                borderBottom:
+                                  key === 0
+                                    ? "1px solid lightgray"
+                                    : key === options.length - 1
+                                    ? "none"
+                                    : "1px solid lightgray",
+                                borderRadius:
+                                  key === 0
+                                    ? "6px 6px 0 0"
+                                    : key === options.length - 1
+                                    ? "0 0 6px 6px"
+                                    : "none",
+                              }}
+                            >
+                              {item.name}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
