@@ -16,7 +16,7 @@ const Sidebar = () => {
     { title: "Files", src: "Folder", link: "/files" },
     { title: "Smart Share", src: "Calendar", gap: true, link: "/smartshare" },
     { title: "Api", src: "Search", link: "/CloudBoxApi" },
-    { title: "Storage", src: "Chart" },
+    { title: "Storage", src: "Chart", link: "/storage" },
     { title: "Setting", src: "Setting" },
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
   ];

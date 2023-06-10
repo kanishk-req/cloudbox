@@ -1,10 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, use } from "react";
 import storage from "@/firebase/storage";
 import db from "@/firebase/firestore";
 import { useAuth } from "./contexts/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { TempFilesData } from "./smartshare";
 
 function UploadFile({
@@ -39,6 +46,30 @@ function UploadFile({
     },
     [file, user?.uid, location]
   );
+  const HandleStorage = useCallback(async (size: number) => {
+    const userDocRef = doc(db, "User", `${user?.uid}`);
+    const data = await getDoc(userDocRef);
+    const Storage = data.data()?.Storage;
+    await updateDoc(userDocRef, {
+      Storage: {
+        ...Storage,
+        Used: Storage.Used + size / 1024 ** 2,
+        Free: Storage.Free - size / 1024 ** 2,
+      },
+    });
+    const userData = JSON.parse(localStorage.getItem("User") ?? "{}");
+    localStorage.setItem(
+      "User",
+      JSON.stringify({
+        ...userData,
+        Storage: {
+          ...userData.Storage,
+          Used: Storage.Used + size / 1024 ** 2,
+          Free: Storage.Free - size / 1024 ** 2,
+        },
+      })
+    );
+  }, []);
 
   const uploadFileToStorage = useCallback(async () => {
     const storageRef = ref(storage, `${user?.uid}/${Path}/${file?.name}`);
@@ -74,6 +105,7 @@ function UploadFile({
 
   useEffect(() => {
     if (!file) return;
+    HandleStorage(file.size);
     uploadFileToStorage();
   }, [file]);
 
