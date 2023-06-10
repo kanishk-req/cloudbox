@@ -67,7 +67,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
   useEffect(() => {
-    const theme = localStorage.getItem("theme");
+    const theme = localStorage && localStorage.getItem("theme");
     if (theme === "theme2") {
       setTheme(theme2);
       setSidebar(sidebar2);

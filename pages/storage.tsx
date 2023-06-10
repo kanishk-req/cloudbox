@@ -1,12 +1,11 @@
 import React from "react";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
+import StoragePage from "@/components/ui/storage";
 import { useTheme } from "./contexts/theme";
 
 function Storage() {
   const { theme } = useTheme();
-  const StorageData = JSON.parse(localStorage.getItem("User") ?? "{}");
-
   return (
     <div
       style={{
@@ -27,11 +26,7 @@ function Storage() {
           <Searchbar />
         </div>
         <div className="flex flex-wrap px-10 justify-start">
-          {StorageData.Storage && (
-            <div className="flex flex-wrap justify-evenly">
-              {StorageData.Storage.Used}
-            </div>
-          )}
+          <StoragePage />
         </div>
       </div>
     </div>

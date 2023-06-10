@@ -66,22 +66,23 @@ export default function AuthProvider({
             Free: 500,
           },
         });
-        localStorage.setItem(
-          "User",
-          JSON.stringify({
-            name: user.displayName,
-            email: user.email,
-            uid: user.uid,
-            emailVerified: user.emailVerified,
-            photoURL: user.photoURL,
-            phoneNumber: user.phoneNumber,
-            Storage: {
-              Total: 500,
-              Used: 0,
-              Free: 500,
-            },
-          })
-        );
+        localStorage &&
+          localStorage.setItem(
+            "User",
+            JSON.stringify({
+              name: user.displayName,
+              email: user.email,
+              uid: user.uid,
+              emailVerified: user.emailVerified,
+              photoURL: user.photoURL,
+              phoneNumber: user.phoneNumber,
+              Storage: {
+                Total: 500,
+                Used: 0,
+                Free: 500,
+              },
+            })
+          );
         // console.log("Document written with ID: ", customId);
       }
     };

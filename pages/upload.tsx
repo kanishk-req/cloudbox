@@ -57,18 +57,21 @@ function UploadFile({
         Free: Storage.Free - size / 1024 ** 2,
       },
     });
-    const userData = JSON.parse(localStorage.getItem("User") ?? "{}");
-    localStorage.setItem(
-      "User",
-      JSON.stringify({
-        ...userData,
-        Storage: {
-          ...userData.Storage,
-          Used: Storage.Used + size / 1024 ** 2,
-          Free: Storage.Free - size / 1024 ** 2,
-        },
-      })
+    const userData = JSON.parse(
+      (localStorage && localStorage.getItem("User")) ?? "{}"
     );
+    localStorage &&
+      localStorage.setItem(
+        "User",
+        JSON.stringify({
+          ...userData,
+          Storage: {
+            ...userData.Storage,
+            Used: Storage.Used + size / 1024 ** 2,
+            Free: Storage.Free - size / 1024 ** 2,
+          },
+        })
+      );
   }, []);
 
   const uploadFileToStorage = useCallback(async () => {
