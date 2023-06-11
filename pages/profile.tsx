@@ -112,6 +112,26 @@ function Profile() {
               </label>
             )}
           </div>
+          <div className="relative z-0 w-full mb-6 group">
+            <label className="text-sm text-gray-500 dark:text-gray-400 mr-4">
+              Secret Token
+            </label>
+            <input
+              type="text"
+              value={user?.uid}
+              className=" text-sm w-[15rem] text-gray-900 bg-transparent  appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            />
+            {/* copy button */}
+            <button
+              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100  font-medium rounded-lg text-sm px-3 py-1.5 mr-2 mb-2 "
+              onClick={() => {
+                navigator.clipboard.writeText(user!.uid);
+              }}
+            >
+              Copy
+            </button>
+          </div>
+
           <button
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
