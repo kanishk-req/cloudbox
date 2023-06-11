@@ -25,7 +25,7 @@ function Storage() {
         <div className="flex flex-wrap justify-evenly p-2">
           <Searchbar />
         </div>
-        <div className="flex flex-wrap px-10 justify-start">
+        <div className="flex w-full flex-wrap px-10 justify-start">
           <StoragePage />
         </div>
       </div>

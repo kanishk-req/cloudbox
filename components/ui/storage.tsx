@@ -1,31 +1,53 @@
 import React from "react";
+import { useAuth } from "../../pages/contexts/auth";
+import db from "../../firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Storage() {
-  const [Data, setData] = React.useState<any>(null);
+  const { user } = useAuth();
+  const [Data, setData] = React.useState(null);
   React.useEffect(() => {
-    const value = localStorage.getItem("User");
-    if (value) {
-      setData(JSON.parse(value));
-    }
-  }, []);
+    if (!user) return;
+    const getData = async () => {
+      const docRef = doc(db, "User", user?.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setData({
+          labels: ["Used", "Free"],
+          datasets: [
+            {
+              label: "# of Votes",
+              data: [
+                docSnap.data()?.Storage?.Used,
+                docSnap.data()?.Storage?.Free,
+              ],
+              backgroundColor: [
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+              ],
+              borderColor: [
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        });
+      } else {
+        alert("No such document!");
+      }
+    };
+    getData();
+  }, [user]);
 
   return (
-    <div>
-      <h1>Storage</h1>
-      <div className="flex flex-wrap justify-evenly">
-        <div className="flex flex-col items-center justify-center w-1/3 h-1/3 p-2 m-2 bg-white rounded-md shadow-md">
-          <h1 className="text-2xl font-bold">Total</h1>
-          <h1 className="text-2xl font-bold">{Data?.Storage?.Total} MB</h1>
-        </div>
-        <div className="flex flex-col items-center justify-center w-1/3 h-1/3 p-2 m-2 bg-white rounded-md shadow-md">
-          <h1 className="text-2xl font-bold">Used</h1>
-          <h1 className="text-2xl font-bold">{Data?.Storage?.Used} MB</h1>
-        </div>
-        <div className="flex flex-col items-center justify-center w-1/3 h-1/3 p-2 m-2 bg-white rounded-md shadow-md">
-          <h1 className="text-2xl font-bold">Free</h1>
-          <h1 className="text-2xl font-bold">{Data?.Storage?.Free} MB</h1>
-        </div>
-      </div>
+    <div className="h-[70vh] w-1/2 flex  flex-col gap-5 items-center">
+      <h1 className="text-2xl font-bold ">Storage</h1>
+      {Data && <Pie data={Data} />}
     </div>
   );
 }
