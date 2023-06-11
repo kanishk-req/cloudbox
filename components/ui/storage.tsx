@@ -5,11 +5,21 @@ import { doc, getDoc } from "firebase/firestore";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 
+export type ChatType = {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+    borderColor: string[];
+    borderWidth: number;
+  }[];
+};
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Storage() {
   const { user } = useAuth();
-  const [Data, setData] = React.useState(null);
+  const [Data, setData] = React.useState<ChatType | null>(null);
   React.useEffect(() => {
     if (!user) return;
     const getData = async () => {
