@@ -16,38 +16,4 @@ All API requests must be authenticated using the `secret-token` provided to you.
 
 ## API Endpoints
 
-### Get User's Photos
-
-Endpoint: `GET /api/{secret-token}/getPhotos/`
-
-This endpoint retrieves all photos associated with the user's CloudBox account.
-
-### Upload Photo
-
-Endpoint: `POST /api/{secret-token}/postPhotos/`
-
-This endpoint allows the user to upload a new photo to their CloudBox account.
-
-### Get Folder
-
-Endpoint: `GET /api/{secret-token}/getFolder/`
-
-This endpoint retrieves all folders associated with the user's CloudBox account.
-
-### Create Folder
-
-Endpoint: `POST /api/{secret-token}/postFolder/`
-
-This endpoint allows the user to create a new folder in their CloudBox account.
-
-### Get Documents
-
-Endpoint: `GET /api/{secret-token}/getDocs/`
-
-This endpoint retrieves all documents associated with the user's CloudBox account.
-
-### Upload Document
-
-Endpoint: `POST /api/{secret-token}/postDocs/`
-
-This endpoint allows the user to upload a new document to their CloudBox account.
+work in progress
