@@ -20,7 +20,26 @@ const RecentImages = ({
     if (index !== menu) setMenu(index);
     else setMenu(-1);
   };
-  const options = [{ name: "Open" }, { name: "Delete" }, { name: "share" }];
+  const options = [
+    {
+      name: "Open",
+      onClick: () => {
+        alert("Opening ");
+      },
+    },
+    {
+      name: "Delete",
+      onClick: () => {
+        alert("Deleting ");
+      },
+    },
+    {
+      name: "share",
+      onClick: () => {
+        alert("sharing ");
+      },
+    },
+  ];
   return (
     <>
       {loadingState ? (
@@ -87,18 +106,37 @@ const RecentImages = ({
               >
                 {/* <Link href={`/image/${item.id}`}> */}
                 <div className="w-full h-52 p-2">
-                  <div className="h-1/6  w-full relative z-10 flex justify-between px-2 capitalize items-center">
+                  <div className="h-1/6  w-full relative z-10 flex justify-between pl-2 capitalize items-center">
                     {item.date}
-                    <div>
-                      <Image
-                        src="/threeDotsVertical.svg"
-                        width={20}
-                        height={20}
-                        alt=":"
-                        onClick={() => handleClick(index)}
-                        className="hover:bg-gray-200 rounded-full hover:border-2 hover:border-gray-200"
-                      />
-                    </div>
+                    {index !== -1 && menu === index ? (
+                      <div
+                        className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
+                        onClick={() => {
+                          handleClick(index);
+                        }}
+                      >
+                        <Image
+                          src="/cross.svg"
+                          width={10}
+                          height={10}
+                          alt=":"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
+                        onClick={() => {
+                          handleClick(index);
+                        }}
+                      >
+                        <Image
+                          src="/threeDotsVertical.svg"
+                          width={20}
+                          height={20}
+                          alt=":"
+                        />
+                      </div>
+                    )}
                     {index !== -1 && menu === index && (
                       <div
                         className="absolute top-[2.5rem] right-1 z-50 rounded-md w-[6rem] h-[6rem]"
@@ -107,12 +145,15 @@ const RecentImages = ({
                           color: theme?.secondaryText,
                         }}
                       >
-                        {options.map((item, key) => (
+                        {options.map((Optionitem, key) => (
                           <div
                             key={key}
                             className="w-full h-1/3 flex justify-center items-center rounded-md"
                           >
                             <div
+                              onClick={() => {
+                                Optionitem.onClick?.call(item);
+                              }}
                               className="w-full h-8 flex justify-center items-center hover:bg-gray-200 hover:text-gray-700"
                               style={{
                                 borderTop:
