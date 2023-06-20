@@ -10,6 +10,19 @@ import { useTheme } from "@/pages/contexts/theme";
 const Sidebar = () => {
   const { sidebar } = useTheme();
   const [open, setOpen] = useState(true);
+
+  useEffect(() => {
+    const sidebar = sessionStorage.getItem("sidebar");
+    if (sidebar) {
+      const { open } = JSON.parse(sidebar);
+      setOpen(open);
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("sidebar", JSON.stringify({ open }));
+  }, [open]);
+
   const Menus = [
     { title: "Home", src: "Chart_fill", link: "/" },
     { title: "Images", src: "Chat", link: "/images" },
