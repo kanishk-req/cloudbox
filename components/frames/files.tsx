@@ -83,7 +83,8 @@ const RecentImages = ({
                       onClick={() => {
                         window.open(item.url, "_blank");
                       }}
-                      className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 font-medium rounded-full text-sm px-6 py-2.5 mr-2 mb-2"
+                      className="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 
+                      font-medium rounded-full text-sm px-6 py-2.5 mr-2 mb-2 h-auto w-[90%] break-words"
                     >
                       {item.name}
                     </button>
