@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 // eslint-disable-next-line @next/next/no-img-element
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import Styled from "styled-components";
 import Link from "next/link";
 import { useTheme } from "@/pages/contexts/theme";
@@ -11,7 +11,7 @@ const Sidebar = () => {
   const { sidebar } = useTheme();
   const [open, setOpen] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const sidebar = sessionStorage.getItem("sidebar");
     if (sidebar) {
       const { open } = JSON.parse(sidebar);
@@ -19,7 +19,7 @@ const Sidebar = () => {
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     sessionStorage.setItem("sidebar", JSON.stringify({ open }));
   }, [open]);
 
