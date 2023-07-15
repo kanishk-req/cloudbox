@@ -18,7 +18,6 @@ function Index() {
         width: "100vw",
         display: "flex",
         overflowX: "hidden",
-
         flexDirection: "row",
       }}
     >
