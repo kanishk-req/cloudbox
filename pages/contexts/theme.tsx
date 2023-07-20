@@ -76,7 +76,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       setTheme(theme2);
       setSidebar(sidebar2);
     }
-  }, []);
+  }, []);    
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, sidebar }}>
       {children}

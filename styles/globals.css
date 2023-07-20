@@ -17,19 +17,20 @@
 }
 * {
   scrollbar-width: 5px;
-  scrollbar-color: #ffa559 white;
 }
+
+
 *::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 *::-webkit-scrollbar-track {
-  background: white;
+  background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #ffa559;
+  background-color: #ffa559 ;
 }
 @layer components {
   .font-BeasNeue {
