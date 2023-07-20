@@ -75,10 +75,10 @@ function Image() {
           backgroundColor: theme.primary,
         }}
       >
-        <div className="flex flex-wrap justify-evenly p-2">
+        <div className="flex flex-wrap justify-evenly px-2 pt-2">
           <Searchbar />
         </div>
-        <div className="flex flex-wrap p-2 justify-start">
+        <div className="flex flex-wrap px-2 justify-start">
           <div className="w-full max-h-[80vh] overflow-auto" 
             style={{
               backgroundColor: theme.primary,

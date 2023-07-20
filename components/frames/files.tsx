@@ -65,8 +65,11 @@ const RecentImages = ({
                 <div className="w-full h-52 p-2">
                   <div className="h-1/6  w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg"></div>
-                    <div>
-                      {" "}
+                    <div 
+                      style={{
+                        filter: theme?.invertImage ? "invert(1)" : "invert(0)",
+                      }}
+                    >
                       <Image
                         src="/threeDotsVertical.svg"
                         width={20}
@@ -111,6 +114,9 @@ const RecentImages = ({
                     {index !== -1 && menu === index ? (
                       <div
                         className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
+                        style={{
+                          filter: theme?.invertImage ? "invert(1)" : "invert(0)",
+                        }}
                         onClick={() => {
                           handleClick(index);
                         }}
@@ -125,6 +131,9 @@ const RecentImages = ({
                     ) : (
                       <div
                         className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
+                        style={{
+                          filter: theme?.invertImage ? "invert(1)" : "invert(0)",
+                        }}
                         onClick={() => {
                           handleClick(index);
                         }}
@@ -141,7 +150,7 @@ const RecentImages = ({
                       <div
                         className="absolute top-[2.5rem] right-1 z-50 rounded-md w-[6rem] h-[6rem]"
                         style={{
-                          backgroundColor: "white",
+                          backgroundColor: theme?.secondary,
                           color: theme?.secondaryText,
                         }}
                       >
@@ -176,7 +185,7 @@ const RecentImages = ({
                                     : "none",
                               }}
                             >
-                              {item.name}
+                              {Optionitem.name}
                             </div>
                           </div>
                         ))}

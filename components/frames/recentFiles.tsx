@@ -58,6 +58,29 @@ const RecentFiles = ({ theme }: { theme: themeType }) => {
             </Link>
           </div>
         ))}
+              <div >
+              <button
+                type="button"
+                className={`inline-flex border border-transparent 
+                  items-center justify-evenly w-[10vw] px-6 py-2 
+                  text-sm font-medium  
+                  rounded-lg focus:outline-none`}
+                style={{
+                  backgroundColor: theme.secondary,
+                  color: theme.secondaryText,
+                }}
+              >
+                <span
+                  className={`inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full`}
+                  style={{
+                    filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                  }}
+                >
+                  <Image alt="folder" fill src="/icons8-plus-30.svg" />
+                </span>
+                New Folder
+              </button>
+          </div>
       </div>
     </div>
   );
