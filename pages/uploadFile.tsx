@@ -34,6 +34,7 @@ export function UploadFile() {
         className={`w-full max-h-[100vh]`}
         style={{
           backgroundColor: theme.primary,
+          color: theme.text,
         }}
       >
         <div className="flex flex-wrap justify-evenly p-2 ">
@@ -42,7 +43,7 @@ export function UploadFile() {
         <div className="flex flex-wrap p-2 justify-start gap-[2rem]">
           <div className="w-full max-h-[55vh] overflow-auto gap-9 flex flex-row">
             <div className="px-[2vw] w-1/2">
-              <h1 className="text-2xl text-gray-900 mb-4">Upload</h1>
+              <h1 className="text-2xl mb-4">Upload</h1>
               <div className="flex items-center w-full">
                 <Upload location="Home" status={setProgress} files={setUrls} />
               </div>

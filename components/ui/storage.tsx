@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "../../pages/contexts/auth";
+import { useTheme } from "../../pages/contexts/theme";
 import db from "../../firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -19,6 +20,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Storage() {
   const { user } = useAuth();
+  const {theme} = useTheme()
   const [Data, setData] = React.useState<ChatType | null>(null);
   React.useEffect(() => {
     if (!user) return;
@@ -56,7 +58,11 @@ function Storage() {
 
   return (
     <div className="h-[70vh] w-1/2 flex  flex-col gap-5 items-center">
-      <h1 className="text-2xl font-bold ">Storage</h1>
+      <h1 className="text-2xl font-bold "
+      style={{
+        color: theme.text
+      }}
+      >Storage</h1>
       {Data && <Pie data={Data} />}
     </div>
   );

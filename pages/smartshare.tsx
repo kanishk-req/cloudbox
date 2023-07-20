@@ -14,7 +14,8 @@ export interface TempFilesData {
   url: string;
 }
 function Smartshare() {
-  const [dropDown, setDropDown] = useState<boolean>(false);
+  const { theme } = useTheme();
+  const [dropDown, setDropDown] = useState<string>("off");
   const [file, setFile] = useState<File | null>(null);
   const [urls, setUrl] = useState<TempFilesData[]>([]);
   const [result, setResult] = useState<string[]>([]);
@@ -92,7 +93,6 @@ function Smartshare() {
     return () => URL.revokeObjectURL(blobUrl);
   }, [file]);
 
-  const { theme } = useTheme();
   return (
     <div
       style={{
@@ -107,6 +107,7 @@ function Smartshare() {
         className={`w-full max-h-[100vh]`}
         style={{
           backgroundColor: theme.primary,
+          color: theme.text,
         }}
       >
         <div className="flex flex-wrap justify-evenly p-2 ">
@@ -115,7 +116,7 @@ function Smartshare() {
         <div className="flex flex-wrap p-2 justify-start gap-[2rem]">
           <div className="w-full max-h-[55vh] overflow-auto gap-9 flex flex-row">
             <div className="px-[2vw] w-1/2">
-              <h1 className="text-2xl text-gray-900 mb-4">Smart Share</h1>
+              <h1 className="text-2xl mb-4">Smart Share</h1>
               <div className="flex items-center w-full">
                 <UploadImage setFile={setFile} />
               </div>
@@ -123,16 +124,18 @@ function Smartshare() {
                 <div className="flex">
                   <label
                     htmlFor="search-dropdown"
-                    className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                  >
-                    Time
-                  </label>
+                    className="mb-2 text-sm font-medium sr-only "
+                  ></label>
                   <button
-                    className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 dark:border-gray-700 dark:text-white rounded-l-lg hover:bg-gray-200"
+                    className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg"
                     type="button"
-                    onClick={() => setDropDown(!dropDown)}
+                    onClick={() =>
+                      setDropDown(dropDown === "off" ? "on" : "off")
+                    }
                   >
-                    Time
+                    {
+                      dropDown === "on" ? "Time" : dropDown === "off" ? "Time" : dropDown   
+                    }
                     <svg
                       aria-hidden="true"
                       className="w-4 h-4 ml-1"
@@ -147,43 +150,31 @@ function Smartshare() {
                       />
                     </svg>
                   </button>
-                  {dropDown && (
+                  {dropDown === "on" && (
                     <div className="z-10 bg-white divide-y translate-y-[3rem] absolute divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                       <ul
                         className="py-2 text-sm text-gray-700 dark:text-gray-200"
                         aria-labelledby="dropdown-button"
                       >
-                        <li>
-                          <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            1 days
-                          </a>
+                        <li onClick={()=>{
+                          setDropDown("1 day")
+                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          <a>1 days</a>
                         </li>
-                        <li>
-                          <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            2 days
-                          </a>
+                        <li onClick={()=>{
+                          setDropDown("2 day")
+                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          2 days
                         </li>
-                        <li>
-                          <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            5 days
-                          </a>
+                        <li onClick={()=>{
+                          setDropDown("5 day")
+                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          5 days
                         </li>
-                        <li>
-                          <a
-                            href="#"
-                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            1 week
-                          </a>
+                        <li onClick={()=>{
+                          setDropDown("1 week")
+                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          1 week
                         </li>
                       </ul>
                     </div>
@@ -194,6 +185,7 @@ function Smartshare() {
                       id="search-dropdown"
                       className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-100 border-l-2 border border-gray-300 focus:outline-none"
                       placeholder="Title"
+                      autoComplete="off"
                       ref={name}
                     />
                     <button
@@ -220,7 +212,7 @@ export default Smartshare;
 export const Preview = ({ urls }: { urls: TempFilesData[] }) => {
   return (
     <div className="px-[2vw] max-w-[80vw] w-full h-[34vh]">
-      <h1 className="text-2xl text-gray-900 mb-4">Preview</h1>
+      <h1 className="text-2xl mb-4">Preview</h1>
       <div className="flex h-[30vh] gap-3  overflow-y-hidden overflow-x-auto ">
         {urls && urls.length > 0
           ? urls.map((url, k) => (
@@ -243,7 +235,7 @@ export const Preview = ({ urls }: { urls: TempFilesData[] }) => {
                   role="status"
                   className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 md:flex md:items-center"
                 >
-                  <div className="flex items-center justify-center min-w-[30vw] h-[28vh] bg-gray-300 rounded sm:w-96 dark:bg-gray-500">
+                  <div className="flex items-center justify-center min-w-[30vw] h-[28vh] bg-gray-300 rounded sm:w-96 dark:bg-gray-400">
                     <svg
                       className="w-12 h-12 text-gray-200"
                       xmlns="http://www.w3.org/2000/svg"
@@ -266,10 +258,14 @@ export const UploadImage = ({
 }: {
   setFile: React.Dispatch<React.SetStateAction<any>>;
 }) => {
+  const { theme } = useTheme();
   return (
     <label
       htmlFor="dropzone-file"
-      className="flex flex-col items-center justify-center w-full h-[40vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2"
+      className="flex flex-col items-center justify-center w-full h-[40vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2"
+      style={{
+        backgroundColor: theme.secondary,
+      }}
     >
       <div className="flex flex-col items-center justify-center pt-5 pb-6">
         <svg
@@ -319,14 +315,18 @@ export const ImageStatus = ({
   urls: TempFilesData[];
   status?: number | null;
 }) => {
+  const { theme } = useTheme();
   return (
     <div className="px-[2vw] w-2/5 h-full">
-      <h1 className="text-2xl text-gray-900 mb-4">Status</h1>
+      <h1 className="text-2xl mb-4">Status</h1>
       {urls && urls.length > 0
         ? urls.map((url, k) => (
             <div
               key={k}
-              className="flex items-center w-full h-[5vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2 relative"
+              className="flex items-center w-full h-[5vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2 relative"
+              style={{
+                backgroundColor: theme.secondary,
+              }}
             >
               <div className="w-[90%] h-full bg-blue-200">
                 <input
@@ -343,12 +343,24 @@ export const ImageStatus = ({
                   className="w-full h-full flex justify-center items-center p-2"
                 />
               </div>
-              <div className="w-[10%] h-full bg-red-200 flex items-center ">
+              <div
+                className="w-[10%] h-full  flex items-center "
+                style={{
+                  backgroundColor: theme.accent,
+                }}
+              >
                 {/* <button className="w-1/2 h-1/2 p-2 relative">
             <Image src={"edit.svg"} alt="download" fill />
           </button> */}
                 <button className="w-full h-1/2 p-2 relative">
-                  <Image src={"trash.svg"} alt="trash" fill />
+                  <Image
+                    src={"trash.svg"}
+                    alt="trash"
+                    style={{
+                      filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                    }}
+                    fill
+                  />
                 </button>
               </div>
             </div>
@@ -357,15 +369,27 @@ export const ImageStatus = ({
             return (
               <div
                 key={k}
-                className="flex items-center w-full h-[5vh] border-2 border-gray-300 animate-pulse border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2 relative"
+                className="flex items-center w-full h-[5vh] border-2 border-gray-300  border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2 relative"
               >
-                <div className="w-[90%] h-full flex justify-center items-center bg-gray-200 dark:bg-gray-500"></div>
-                <div className="w-[10%] h-full bg-red-200 flex items-center ">
+                <div className="w-[90%] h-full flex justify-center items-center animate-pulse bg-gray-200 dark:bg-gray-300"></div>
+                <div
+                  className="w-[10%] h-full  flex items-center "
+                  style={{
+                    backgroundColor: theme.accent,
+                  }}
+                >
                   {/* <button className="w-1/2 h-1/2 p-2 relative">
             <Image src={"edit.svg"} alt="download" fill />
           </button> */}
                   <button className="w-full h-1/2 p-2 relative">
-                    <Image src={"trash.svg"} alt="trash" fill />
+                    <Image
+                      src={"trash.svg"}
+                      alt="trash"
+                      fill
+                      style={{
+                        filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                      }}
+                    />
                   </button>
                 </div>
               </div>

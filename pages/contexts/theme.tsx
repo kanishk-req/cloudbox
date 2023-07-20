@@ -1,22 +1,26 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { themeType } from "@/components/types";
 const theme2 = {
-  primary: "#36454F",
-  secondary: "#696969",
-  accent: "#D4ADFC",
-  text: "#FFFFFF",
+  primary: "#343541",
+  secondary: "#3E3F4B",
+  accent: "#6594d7",
+  text: "#ECECF1",
   secondaryText: "#FFFFFF",
+  invertImage: true,
+
 };
 const theme1 = {
   primary: "#FFFFFF",
   secondary: "#f2f2f2",
-  accent: "#D0D0D0",
+  accent: "#f09b6d",
   text: "#000000",
   secondaryText: "#4B5563",
+  invertImage: false,
+
 };
 const sidebar2 = {
-  primary: "black",
-  hover: "#f1f1f1",
+  primary: "#202123",
+  hover: "#3E3F4B",
   text: "white",
   invertImage: false,
 };
@@ -47,7 +51,7 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<themeType>({
-    ...theme1,
+    ...theme2,
   });
   const [sidebar, setSidebar] = useState<{
     primary: string;
@@ -55,7 +59,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     text: string;
     invertImage: boolean;
   }>({
-    ...sidebar1,
+    ...sidebar2,
   });
   const toggleTheme = () => {
     if (theme === theme1) {

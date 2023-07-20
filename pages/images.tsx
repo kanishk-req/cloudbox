@@ -10,30 +10,15 @@ import {
   limit,
 } from "firebase/firestore";
 import { useAuth } from "@/pages/contexts/auth";
+import { useTheme } from "@/pages/contexts/theme";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
-import { themeType, datatype, imageType } from "@/components/types";
+import {datatype, imageType } from "@/components/types";
 
-const theme2 = {
-  primary: "#36454F",
-  secondary: "#696969",
-  accent: "#D4ADFC",
-  text: "#FFFFFF",
-  secondaryText: "#FFFFFF",
-};
-const theme1 = {
-  primary: "#FFFFFF",
-  secondary: "#f2f2f2",
-  accent: "#D0D0D0",
-  text: "#000000",
-  secondaryText: "#4B5563",
-};
-
+ 
 function Image() {
   const { user } = useAuth();
-  const [theme, setTheme] = useState<themeType>({
-    ...theme1,
-  });
+  const { theme } = useTheme();
   const [images, setImages] = useState<imageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -94,7 +79,11 @@ function Image() {
           <Searchbar />
         </div>
         <div className="flex flex-wrap p-2 justify-start">
-          <div className="w-full max-h-[80vh] overflow-auto">
+          <div className="w-full max-h-[80vh] overflow-auto" 
+            style={{
+              backgroundColor: theme.primary,
+            }}
+          >
             {images.length > 0
               ? images.map((item, index) => (
                   <RecentImages

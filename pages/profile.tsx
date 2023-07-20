@@ -2,15 +2,18 @@ import React from "react";
 import Sidebar from "@/components/ui/sidebar";
 import Image from "next/image";
 import { useAuth } from "./contexts/auth";
+import { useTheme } from "./contexts/theme";
 
 function Profile() {
   const { user, UpdateUserDetails, signOut } = useAuth();
+  const { theme } = useTheme(); 
   const logout = () => {
     signOut();
     window.location.href = "/";
   };
 
   const [ModalState, setModalState] = React.useState(true);
+  const [copyState, setCopyState] = React.useState(false);
   const [userDetails, setUserDetails] = React.useState({
     name: "",
     email: "",
@@ -23,6 +26,7 @@ function Profile() {
       photoUrl: user?.photoURL ?? "",
     });
   }, [user]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (userDetails.name === "" || userDetails.email === "") {
@@ -36,6 +40,14 @@ function Profile() {
       email: user?.email ?? "",
       photoUrl: user?.photoURL ?? "",
     });
+  };
+  const handleCopy = () => {
+    navigator.clipboard.writeText(user!.uid);
+    setCopyState(true);
+    setInterval(() => {
+      setCopyState(false);
+    }
+    , 3000);
   };
 
   return (
@@ -52,7 +64,10 @@ function Profile() {
         <div className="flex flex-col items-center justify-center w-full h-[30vh] bg-orange-300">
           <div
             id="imageHolder"
-            className="w-32 h-32 rounded-full bg-white relative"
+            className="w-32 h-32 rounded-full  relative"
+            style={{
+              backgroundColor: theme.primary,
+            }}
             onClick={() => setModalState(true)}
           >
             <input
@@ -73,7 +88,7 @@ function Profile() {
               type="text"
               name="floating_name"
               id="floating_name"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none"
               placeholder=" "
               value={userDetails.name}
               disabled={user?.displayName ? true : false}
@@ -84,7 +99,7 @@ function Profile() {
             {userDetails.name.length <= 0 && (
               <label
                 htmlFor="floating_name"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                className="peer-focus:font-medium absolute text-sm text-gray-500"
               >
                 Name
               </label>
@@ -95,7 +110,7 @@ function Profile() {
               type="email"
               name="floating_company"
               id="floating_company"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none"
               placeholder=" "
               value={userDetails.email}
               disabled={user?.email ? true : false}
@@ -106,42 +121,44 @@ function Profile() {
             {userDetails.email.length <= 0 && (
               <label
                 htmlFor="floating_company"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                className="peer-focus:font-medium absolute text-sm text-gray-500"
               >
                 Email
               </label>
             )}
           </div>
-          <div className="relative z-0 w-full mb-6 group">
-            <label className="text-sm text-gray-500 dark:text-gray-400 mr-4">
-              Secret Token
+          <div className="relative z-0 w-full mb-6 group ">
+            <label className="text-sm text-gray-500mr-4">
+              Secret Token : 
             </label>
             <input
               type="text"
               value={user?.uid}
-              className=" text-sm w-[15rem] text-gray-900 bg-transparent  appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="text-sm w-[16rem] p-2 mx-2 text-gray-900 bg-transparent  appearance-none"
             />
             {/* copy button */}
             <button
               className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100  font-medium rounded-lg text-sm px-3 py-1.5 mr-2 mb-2 "
               onClick={() => {
-                navigator.clipboard.writeText(user!.uid);
+                handleCopy()
               }}
             >
-              Copy
+              {
+                copyState ? "Copied" : "Copy"
+              }
             </button>
           </div>
 
           <button
             type="submit"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
           >
             Submit
           </button>
           <button
             type="button"
             onClick={logout}
-            className="text-white ml-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-white ml-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center -700"
           >
             Logout
           </button>

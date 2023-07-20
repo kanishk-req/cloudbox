@@ -13,6 +13,7 @@ export type themeType = {
   accent: string;
   text: string;
   secondaryText?: string;
+  invertImage: boolean;
 };
 
 export interface imageType {
