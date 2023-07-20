@@ -36,25 +36,29 @@ const Sidebar = () => {
 
   return (
     <div
-      className={` ${open ? "w-72" : "w-20 "} h-screen p-5 pt-8 relative`}
+      className={` ${open ? "w-72" : "w-20 "} h-screen p-5 pt-8 relative 
+      duration-200 transition-all overflow-hidden
+      `}
       style={{
         backgroundColor: sidebar.primary,
         color: sidebar.text,
       }}
     >
-      <div className="flex gap-x-4 items-center">
+      <div
+        className="flex gap-x-4 items-center "
+        onClick={() => setOpen(!open)}
+      >
         <img
           src="/logo.png"
           className={`cursor-pointer`}
           style={{
             filter: `invert(${sidebar.invertImage ? "1" : "0"})`,
           }}
-          onClick={() => setOpen(!open)}
         />
         <h1
-          className={`origin-left font-medium text-xl duration-200 ${
-            !open && "hidden"
-          }`}
+          className={`origin-left font-medium text-xl ${
+            open ? "w-52 delay-150" : "w-0"
+          } overflow-hidden transition-width`}
         >
           Cloud Box
         </h1>
@@ -76,7 +80,13 @@ const Sidebar = () => {
                   filter: `invert(${sidebar.invertImage ? "1" : "0"})`,
                 }}
               />
-              <span className={`${!open && "hidden"}`}>{Menu.title}</span>
+              <span
+                className={`${
+                  open ? "w-52 delay-150" : "w-0"
+                } overflow-hidden transition-width `}
+              >
+                {Menu.title}
+              </span>
             </Li>
           </Link>
         ))}
