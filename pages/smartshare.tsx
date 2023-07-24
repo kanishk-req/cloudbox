@@ -18,74 +18,70 @@ function Smartshare() {
   const [dropDown, setDropDown] = useState<string>("off");
   const [file, setFile] = useState<File | null>(null);
   const [urls, setUrl] = useState<TempFilesData[]>([]);
-  const [result, setResult] = useState<string[]>([]);
   const { user } = useAuth();
-  const uploadFileToFirestore = useCallback(
-    async (downloadURL: string) => {
-      try {
-        await addDoc(
-          collection(db, `User/${user?.uid}/smartshare-${name.current!.value}`),
-          {
-            name: file?.name,
-            size: file?.size,
-            type: file?.type,
-            url: downloadURL,
-            date: new Date().toDateString(),
-          }
-        );
-        // console.log("Document successfully written!");
-        // setProgress(0);
-        setFile(null);
-      } catch (error: any) {
-        // setError(error.message);
-      }
-    },
-    [file, user?.uid]
-  );
-  const uploadFileToStorage = useCallback(
-    async (folderName: string, name: string, file: File) => {
-      const storageRef = ref(
-        storage,
-        `smartshare/${user?.uid}/${folderName}/${name}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          // setProgress(Math.round(progress));
-        },
-        (error) => {
-          // setError(error.message);
-        },
-        async () => {
-          try {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            setResult((prev) => [...prev, downloadURL]);
-          } catch (error: any) {
-            // setError(error.message);
-          }
+  const uploadFileToFirestore = (downloadURL: string) => {
+    try {
+      addDoc(
+        collection(db, `User/${user?.uid}/ss-${new Date().toDateString().split(" ").join("-")}`),
+        {
+          name: file?.name,
+          size: file?.size,
+          type: file?.type,
+          time: dropDown.split(" ")[1] !== "week" ? parseInt(dropDown.split(" ")[0]) : parseInt(dropDown.split(" ")[0]) * 7,
+          url: downloadURL,
+          date: new Date().toDateString(),
         }
       );
-    },
-    [user?.uid]
-  );
+      // setProgress(0);
+      setFile(null);
+      setDropDown("off");
+    } catch (error: any) {
+      // setError(error.message);
+    }
+  };
+  const uploadFileToStorage =  (
+    folderName: string,
+    name: string,
+    file: File
+  ) => {
+    const storageRef = ref(
+      storage,
+      `smartshare/${user?.uid}/${folderName}/${name}-${new Date().toDateString().split(" ").join("-")}}`
+    );
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        // setProgress(Math.round(progress));
+      },
+      (error) => {
+        // setError(error.message);
+      },
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          uploadFileToFirestore(downloadURL);
+        } catch (error: any) {
+          // setError(error.message);
+        }
+      }
+    );
+  };
   const name = useRef<HTMLInputElement>(null);
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
     if (!name.current?.value) return alert("Please enter a name");
+    if (dropDown === "off" || dropDown === "on") return alert("Please select a time");
     urls.forEach((url) => {
       uploadFileToStorage(name.current!.value, url.file.name, url.file);
     });
-    result.forEach((url) => {
-      uploadFileToFirestore(url);
-    });
-    setResult([]);
     setUrl([]);
     name.current.value = "";
   };
+
   useEffect(() => {
     if (!file) return;
     const blobUrl = URL.createObjectURL(file);
@@ -133,9 +129,11 @@ function Smartshare() {
                       setDropDown(dropDown === "off" ? "on" : "off")
                     }
                   >
-                    {
-                      dropDown === "on" ? "Time" : dropDown === "off" ? "Time" : dropDown   
-                    }
+                    {dropDown === "on"
+                      ? "Time"
+                      : dropDown === "off"
+                      ? "Time"
+                      : dropDown}
                     <svg
                       aria-hidden="true"
                       className="w-4 h-4 ml-1"
@@ -156,24 +154,36 @@ function Smartshare() {
                         className="py-2 text-sm text-gray-700 dark:text-gray-200"
                         aria-labelledby="dropdown-button"
                       >
-                        <li onClick={()=>{
-                          setDropDown("1 day")
-                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <li
+                          onClick={() => {
+                            setDropDown("1 day");
+                          }}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
                           <a>1 days</a>
                         </li>
-                        <li onClick={()=>{
-                          setDropDown("2 day")
-                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <li
+                          onClick={() => {
+                            setDropDown("2 day");
+                          }}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
                           2 days
                         </li>
-                        <li onClick={()=>{
-                          setDropDown("5 day")
-                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <li
+                          onClick={() => {
+                            setDropDown("5 day");
+                          }}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
                           5 days
                         </li>
-                        <li onClick={()=>{
-                          setDropDown("1 week")
-                        }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <li
+                          onClick={() => {
+                            setDropDown("1 week");
+                          }}
+                          className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        >
                           1 week
                         </li>
                       </ul>
@@ -331,6 +341,7 @@ export const ImageStatus = ({
               <div className="w-[90%] h-full bg-blue-200">
                 <input
                   type="text"
+                  readOnly={true}
                   value={
                     status === null
                       ? url.file.name.split(".").slice(0, -1).join(".")
