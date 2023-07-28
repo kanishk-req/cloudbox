@@ -54,7 +54,7 @@ const RecentImages = ({
           <div className="flex flex-wrap px-5 gap-9">
             {[1, 2, 3, 4].map((item) => (
               <Div
-                className={`w-[23%] rounded-lg focus:ring-4 focus:outline-none`}
+                className={`rounded-lg focus:ring-4 focus:outline-none sm:w-[23%] md:w-[23%] lg:w-[23%] w-full`}
                 style={{
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,
@@ -113,7 +113,7 @@ const RecentImages = ({
             {data.map((item, index) => (
               <Div
                 key={index}
-                className={`w-[23%] rounded-lg focus:ring-4 focus:outline-none`}
+                className={`rounded-lg focus:ring-4 focus:outline-none sm:w-[23%] md:w-[23%] lg:w-[23%] w-full`}
                 style={{
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,

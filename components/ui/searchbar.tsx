@@ -2,12 +2,18 @@ import Link from "next/link";
 import React from "react";
 import { useAuth } from "@/pages/contexts/auth";
 import Image from "next/image";
+import { useMediaQuery } from "@/pages/contexts/mediaQuery";
 
 const Searchbar = () => {
   const { user } = useAuth();
+  const {isMobile} = useMediaQuery();
   return (
     <div className="w-full h-20 px-5 py-2 flex flex-row">
-      <div className="w-1/2 h-full">
+      <div className="h-full"
+        style={{
+          width: isMobile ? "70%" : "50%",
+        }}
+      >
         <form className="flex items-center">
           <label htmlFor="simple-search" className="sr-only">
             Search
@@ -33,6 +39,7 @@ const Searchbar = () => {
               id="simple-search"
               className="bg-[#f2f2f2] pl-10 py-3  text-gray-900 text-sm rounded-xl block w-full focus:outline-none"
               placeholder="Search"
+              autoComplete="off"
             />
           </div>
           <button
@@ -57,7 +64,11 @@ const Searchbar = () => {
           </button>
         </form>
       </div>
-      <div className="w-1/2 h-full flex justify-end">
+      <div className="h-full flex justify-end"
+      style={{
+        width: isMobile ? "30%" : "50%",
+      }}
+      >
         <div>
           {user ? (
             <Link href="/profile">

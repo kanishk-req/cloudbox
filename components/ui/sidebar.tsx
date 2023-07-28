@@ -6,18 +6,23 @@ import React, { useEffect, useState, useLayoutEffect } from "react";
 import Styled from "styled-components";
 import Link from "next/link";
 import { useTheme } from "@/pages/contexts/theme";
+import { useMediaQuery } from "@/pages/contexts/mediaQuery";
 
 const Sidebar = () => {
   const { sidebar } = useTheme();
   const [open, setOpen] = useState(true);
+  const { isMobile } = useMediaQuery();
 
   useLayoutEffect(() => {
     const sidebar = sessionStorage.getItem("sidebar");
-    if (sidebar) {
+    if (sidebar && !isMobile) {
       const { open } = JSON.parse(sidebar);
       setOpen(open);
     }
-  }, []);
+    if (isMobile) {
+      setOpen(false);
+    }
+  }, [isMobile]);
 
   useLayoutEffect(() => {
     sessionStorage.setItem("sidebar", JSON.stringify({ open }));
@@ -42,11 +47,12 @@ const Sidebar = () => {
       style={{
         backgroundColor: sidebar.primary,
         color: sidebar.text,
+        display: isMobile ? "none" : "block",
       }}
     >
       <div
         className="flex gap-x-4 items-center "
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(!isMobile && !open)}
       >
         <img
           src="/logo.png"

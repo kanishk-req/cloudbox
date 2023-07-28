@@ -18,12 +18,14 @@ import {
 } from "firebase/firestore";
 import db from "@/firebase/firestore";
 import { useTheme } from "./contexts/theme";
+import { useMediaQuery } from "./contexts/mediaQuery";
 
 function Home() {
   const { theme } = useTheme();
   const [data, setData] = useState<datatype[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();
+  const { isMobile } = useMediaQuery();
   const getImageData = useCallback(async (id: string) => {
     const collectionRef = collection(db, `User/${id}/Images`);
     const Ref = query(
@@ -55,14 +57,14 @@ function Home() {
       <div className="flex flex-wrap justify-evenly p-2">
         <Searchbar />
         <RecentImages
-          data={data.slice(0, 4)}
+          data={data.slice(0, isMobile ? 2 : 4)}
           loadingState={loading}
           theme={theme}
           title="Recent Images"
         />
         <RecentFiles theme={theme} />
         <RecentImages
-          data={data}
+          data={data.slice(isMobile ? 2 : 4, isMobile ? 6 : 10)}
           theme={theme}
           loadingState={loading}
           title="Images"
