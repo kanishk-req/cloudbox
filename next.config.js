@@ -6,6 +6,15 @@ const nextConfig = {
   images: {
     domains: ["flowbite.s3.amazonaws.com", "firebasestorage.googleapis.com"],
   },
+  async redirects() {
+    return [
+      {
+        source: '/smartshare/:id',
+        destination: '/api/smartshare/:id',
+        permanent: false,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;
