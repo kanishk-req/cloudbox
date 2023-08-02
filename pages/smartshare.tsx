@@ -52,7 +52,7 @@ function Smartshare() {
 
       // setProgress(0);
       setFile(null);
-      setSmartId(`${id}-${user?.uid}`);
+      setSmartId(`https://cloudbox.ikanishk.me/smartshow?id=${id}-${user?.uid}`);
     } catch (error: any) {
       // setError(error.message);
     }

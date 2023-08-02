@@ -14,17 +14,19 @@ import { useTheme } from "@/pages/contexts/theme";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
 import { datatype, imageType } from "@/components/types";
+import { useRouter } from "next/router";
 
 function Image() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const [images, setImages] = useState<imageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  // get qyery params
 
+  const router = useRouter();
+  const { id } = router.query;
   const getImageData = useCallback(async (id: string) => {
-    const data = await fetch(
-      `/api/smartshare/r6bgbl-D6dUiu8Nr7dWfAcqPI6SywDR4M02`
-    );
+    const data = await fetch(`/api/smartshare/${id}`);
     data.json().then((data) => {
       setImages([
         {
@@ -37,8 +39,9 @@ function Image() {
   }, []);
   useEffect(() => {
     if (!user?.uid) return;
-    getImageData(user?.uid);
-  }, [getImageData, user?.uid]);
+    if (!id) return;
+    getImageData(id as string);
+  }, [getImageData, user?.uid,id]);
 
   return (
     <div
