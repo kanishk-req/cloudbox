@@ -17,7 +17,6 @@ import { datatype, imageType } from "@/components/types";
 import { useRouter } from "next/router";
 
 function Image() {
-  const { user } = useAuth();
   const { theme } = useTheme();
   const [images, setImages] = useState<imageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,10 +37,9 @@ function Image() {
     });
   }, []);
   useEffect(() => {
-    if (!user?.uid) return;
     if (!id) return;
     getImageData(id as string);
-  }, [getImageData, user?.uid,id]);
+  }, [getImageData,id]);
 
   return (
     <div
