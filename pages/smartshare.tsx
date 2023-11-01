@@ -23,7 +23,6 @@ function Smartshare() {
   const [smartId, setSmartId] = useState<string>("");
   const [copyState, setCopyState] = React.useState(false);
   const [ModalState, setModalState] = React.useState(false);
-  
 
   const handleCopy = () => {
     navigator.clipboard.writeText(smartId);
@@ -52,7 +51,9 @@ function Smartshare() {
 
       // setProgress(0);
       setFile(null);
-      setSmartId(`https://cloudbox.ikanishk.me/smartshow?id=${id}-${user?.uid}`);
+      setSmartId(
+        `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`
+      );
     } catch (error: any) {
       // setError(error.message);
     }
@@ -231,32 +232,93 @@ function Smartshare() {
           <Preview urls={urls} />
         </div>
         {ModalState && (
-          <div className="absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] h-[50vh] w-[50vw] bg-white rounded-xl">
-            <div className="flex flex-col items-center justify-center h-full gap-4">
-              <h1 className="text-2xl">SmartLink</h1>
+          <div
+            className="absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] h-[30vh] w-[30vw] rounded-xl"
+            style={{
+              backgroundColor: theme.primary,
+              color: theme.text,
+              border: `2px solid ${theme.text}`,
+            }}
+          >
+            <div className="flex flex-col h-full gap-4">
+              <h1 className="text-2xl mt-5 text-center">SmartLink</h1>
+              <div className="flex flex-col w-full justify-between gap-4 px-6">
+                <h4 className="text-l text-gray-400">General Access</h4>
+                <div className="flex flex-row w-full items-center">
+                  <img src="/web.png" alt="logo" className="h-10 w-10" />
+                  <div className="flex flex-col m-2 ml-5">
+                    <select className="block py-1.5 px-0 w-[60%] text-sm text-gray-300 border-none bg-transparent focus:outline-none">
+                      <option
+                        value="any"
+                        style={{
+                          backgroundColor: theme.secondary,
+                          color: theme.text,
+                        }}
+                      >
+                        Anyone with the link
+                      </option>
+                      <option
+                        value="any"
+                        style={{
+                          backgroundColor: theme.secondary,
+                          color: theme.text,
+                        }}
+                      >
+                        None
+                      </option>
+                    </select>
+                    <p className="px-1 text-sm">
+                      Anyone on the Internet with the link can edit
+                    </p>
+                  </div>
+                  <select className="block px-0 w-20 text-sm border border-gray-500 rounded-md py-3 text-gray-300 bg-transparent focus:outline-none">
+                    <option
+                      value="any"
+                      style={{
+                        backgroundColor: theme.secondary,
+                        color: theme.text,
+                      }}
+                    >
+                      Editor
+                    </option>
+                  </select>
+                </div>
+              </div>
               {smartId ? (
-                <p className="text-sm text-gray-500">
-                  Your SmartLink is ready to use
-                </p>
-              ) : (
-                <p className="text-sm text-gray-500">
-                  Your SmartLink is being generated
-                </p>
-              )}
-              {smartId ? (
-                <div className="flex flex-row items-center justify-center gap-4">
-                  <p>{smartId}</p>
+                <div className="flex flex-row w-full items-center justify-between gap-4 p-6">
                   <button
-                    className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100  font-medium rounded-lg text-sm px-3 py-1.5 mr-2 mb-2 "
+                    className="font-medium rounded-xl text-sm flex flex-row justify-center items-center px-3 py-2 mr-2 mb-2"
+                    style={{
+                      border: `1px solid ${theme.accent}`,
+                      color: theme.text,
+                    }}
                     onClick={() => {
                       handleCopy();
                     }}
                   >
-                    {copyState ? "Copied" : "Copy"}
+                    <img
+                      src="/link.svg"
+                      alt="copy"
+                      className="h-4 w-4 mr-2"
+                    />
+                    {copyState ? "Copied" : "Copy "}
+                  </button>
+
+                  <button
+                    className="font-medium rounded-3xl text-sm px-4 py-2 mr-2 mb-2 "
+                    style={{
+                      backgroundColor: theme.accent,
+                      color: theme.secondaryText,
+                    }}
+                    onClick={() => {
+                      setModalState(false);
+                    }}
+                  >
+                    Done
                   </button>
                 </div>
               ) : (
-                <div role="status">
+                <div className="flex justify-center items-center">
                   <svg
                     aria-hidden="true"
                     className="w-8 h-8 mr-2 text-gray-200 animate-spin  fill-blue-600"
@@ -407,6 +469,10 @@ export const ImageStatus = ({
             >
               <div className="w-[90%] h-full bg-blue-200">
                 <input
+                  style={{
+                    backgroundColor: theme.secondary,
+                    color: theme.text,
+                  }}
                   type="text"
                   readOnly={true}
                   value={
@@ -427,9 +493,6 @@ export const ImageStatus = ({
                   backgroundColor: theme.accent,
                 }}
               >
-                {/* <button className="w-1/2 h-1/2 p-2 relative">
-            <Image src={"edit.svg"} alt="download" fill />
-          </button> */}
                 <button className="w-full h-1/2 p-2 relative">
                   <Image
                     src={"trash.svg"}
@@ -447,9 +510,9 @@ export const ImageStatus = ({
             return (
               <div
                 key={k}
-                className="flex items-center w-full h-[5vh] border-2 border-gray-300  border-dashed rounded-lg cursor-pointer bg-gray-50 mb-2 relative"
+                className="flex items-center w-full h-[5vh] border-2 border-gray-300  border-dashed rounded-lg cursor-pointer mb-2 relative"
               >
-                <div className="w-[90%] h-full flex justify-center items-center animate-pulse bg-gray-200 dark:bg-gray-300"></div>
+                <div className="w-[90%] h-full flex justify-center items-center animate-pulse "></div>
                 <div
                   className="w-[10%] h-full  flex items-center "
                   style={{

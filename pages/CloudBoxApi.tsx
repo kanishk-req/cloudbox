@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React from "react";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
 import { serialize } from "next-mdx-remote/serialize";
