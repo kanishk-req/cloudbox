@@ -13,7 +13,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const { isMobile } = useMediaQuery();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const sidebar = sessionStorage.getItem("sidebar");
     if (sidebar && !isMobile) {
       const { open } = JSON.parse(sidebar);
@@ -24,7 +24,7 @@ const Sidebar = () => {
     }
   }, [isMobile]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     sessionStorage.setItem("sidebar", JSON.stringify({ open }));
   }, [open]);
 
