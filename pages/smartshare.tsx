@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
@@ -8,6 +9,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useAuth } from "./contexts/auth";
 import db from "@/firebase/firestore";
 import { addDoc, collection, setDoc, doc } from "firebase/firestore";
+import { get } from "http";
 
 export interface TempFilesData {
   file: File;
@@ -54,6 +56,35 @@ function Smartshare() {
       setSmartId(
         `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`
       );
+      // Store the URL in localStorage
+      const urls = localStorage.getItem("urls");
+      if (urls) {
+        const urlsArr = JSON.parse(urls);
+        urlsArr.push({
+          name: SmartName,
+          date: new Date().toDateString(),
+          time:
+            dropDown.split(" ")[1] !== "week"
+              ? parseInt(dropDown.split(" ")[0])
+              : parseInt(dropDown.split(" ")[0]) * 7,
+          url: `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`,
+        });
+        localStorage.setItem("urls", JSON.stringify(urlsArr));
+      } else {
+        localStorage.setItem(
+          "urls",
+          JSON.stringify([
+            {
+              name: SmartName,
+              time:
+                dropDown.split(" ")[1] !== "week"
+                  ? parseInt(dropDown.split(" ")[0])
+                  : parseInt(dropDown.split(" ")[0]) * 7,
+              url: `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`,
+            },
+          ])
+        );
+      }
     } catch (error: any) {
       // setError(error.message);
     }
@@ -227,7 +258,7 @@ function Smartshare() {
                 </div>
               </form>
             </div>
-            <ImageStatus urls={urls} />
+            <SmartShareLink />
           </div>
           <Preview urls={urls} />
         </div>
@@ -296,10 +327,15 @@ function Smartshare() {
                       handleCopy();
                     }}
                   >
-                    <img
-                      src="/link.svg"
+                    <Image
+                      src={"copy.svg"}
                       alt="copy"
-                      className="h-4 w-4 mr-2"
+                      height={18}
+                      width={18}
+                      style={{
+                        filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                        marginRight: "0.5rem",
+                      }}
                     />
                     {copyState ? "Copied" : "Copy "}
                   </button>
@@ -447,62 +483,112 @@ export const UploadImage = ({
   );
 };
 
-export const ImageStatus = ({
-  urls,
-  status = null,
-}: {
-  urls: TempFilesData[];
-  status?: number | null;
-}) => {
+export const SmartShareLink = ({}: { status?: number | null }) => {
+  const [urls, setUrl] = useState<
+    { name: string; time: string; url: string; date: string }[]
+  >([]);
+  const [copyState, setCopyState] = React.useState(false);
+  useEffect(() => {
+    const urls = localStorage.getItem("urls");
+    if (urls) {
+      // remove expired links
+      const urlsArr = JSON.parse(urls);
+      const newUrls = urlsArr.filter((url: any) => {
+        const date = new Date(url.date);
+        const time = url.time;
+        const newDate = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + time
+        );
+        const today = new Date();
+        return newDate > today;
+      });
+      localStorage.setItem("urls", JSON.stringify(newUrls));
+      setUrl(JSON.parse(urls));
+    }
+  }, []);
+  const copyURL = (id: number) => {
+    navigator.clipboard.writeText(urls[id].url);
+    setCopyState(true);
+    setInterval(() => {
+      setCopyState(false);
+    }, 3000);
+  };
   const { theme } = useTheme();
   return (
     <div className="px-[2vw] w-2/5 h-full">
-      <h1 className="text-2xl mb-4">Status</h1>
+      <h1 className="text-2xl mb-4">
+        Previous Links{"  "}
+        <span className="text-sm text-gray-400">
+          (Click on the link to copy)
+        </span>
+      </h1>
       {urls && urls.length > 0
-        ? urls.map((url, k) => (
+        ? urls.map((item, index) => (
             <div
-              key={k}
-              className="flex items-center w-full h-[5vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2 relative"
-              style={{
-                backgroundColor: theme.secondary,
-              }}
+              key={index}
+              className="flex flex-col items-center justify-center"
             >
-              <div className="w-[90%] h-full bg-blue-200">
-                <input
-                  style={{
-                    backgroundColor: theme.secondary,
-                    color: theme.text,
-                  }}
-                  type="text"
-                  readOnly={true}
-                  value={
-                    status === null
-                      ? url.file.name.split(".").slice(0, -1).join(".")
-                      : status === 0
-                      ? `Uploading ...`
-                      : status === 100
-                      ? url.file.name.split(".").slice(0, -1).join(".")
-                      : `${status} %`
-                  }
-                  className="w-full h-full flex justify-center items-center p-2"
-                />
-              </div>
               <div
-                className="w-[10%] h-full  flex items-center "
+                className="flex items-center w-full h-[5vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2 relative"
                 style={{
-                  backgroundColor: theme.accent,
+                  backgroundColor: theme.secondary,
                 }}
               >
-                <button className="w-full h-1/2 p-2 relative">
-                  <Image
-                    src={"trash.svg"}
-                    alt="trash"
+                <div className="w-[90%] h-full bg-blue-200">
+                  <input
                     style={{
-                      filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                      backgroundColor: theme.secondary,
+                      color: theme.text,
                     }}
-                    fill
+                    type="text"
+                    readOnly={true}
+                    value={item.url}
+                    className="w-full h-full flex justify-center items-center p-2"
                   />
-                </button>
+                </div>
+                <div
+                  className="w-[10%] h-full  flex items-center "
+                  style={{
+                    backgroundColor: theme.accent,
+                  }}
+                >
+                  <button
+                    className="w-full h-1/2 p-2 relative"
+                    onClick={() => {
+                      copyURL(index);
+                    }}
+                  >
+                    {copyState ? (
+                      <div className="w-full h-full flex justify-center items-center">
+                        Copied
+                      </div>
+                    ) : (
+                      <Image
+                        src={"copy.svg"}
+                        alt="copy"
+                        style={{
+                          filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                        }}
+                        fill
+                      />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center w-full h-[2vh] cursor-pointer mb-2 relative">
+                {item.name && (
+                  <div className="w-[30%] h-full flex gap-1 items-center">
+                    Name :<p className="text-sm text-gray-400">{item.name}</p>
+                  </div>
+                )}
+                {item.time && (
+                  <div className="w-[90%] h-full flex gap-1 items-center">
+                    Expire Time :
+                    <p className="text-sm text-gray-400">{item.time} Days</p>
+                  </div>
+                )}
               </div>
             </div>
           ))
@@ -524,12 +610,12 @@ export const ImageStatus = ({
           </button> */}
                   <button className="w-full h-1/2 p-2 relative">
                     <Image
-                      src={"trash.svg"}
-                      alt="trash"
-                      fill
+                      src={"copy.svg"}
+                      alt="copy"
                       style={{
                         filter: theme.invertImage ? "invert(1)" : "invert(0)",
                       }}
+                      fill
                     />
                   </button>
                 </div>
