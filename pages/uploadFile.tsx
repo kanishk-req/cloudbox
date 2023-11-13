@@ -7,7 +7,7 @@ import Login from "./login";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
 import { useTheme } from "./contexts/theme";
-import { ImageStatus, Preview, TempFilesData } from "./smartshare";
+import { SmartShareLink, Preview, TempFilesData } from "./smartshare";
 
 export function UploadFile() {
   const { theme } = useTheme();
@@ -48,7 +48,7 @@ export function UploadFile() {
                 <Upload location="Home" status={setProgress} files={setUrls} />
               </div>
             </div>
-            <ImageStatus urls={urls} status={progress} />
+            <SmartShareLink />
           </div>
           <Preview urls={urls} />
         </div>
