@@ -100,7 +100,7 @@ function Storage() {
           backgroundColor: theme.secondary,
         }}
       >
-        <div className="h-full w-[20%] justify-center items-center flex flex-col gap-10 text-gray-400">
+        <div className="h-full w-[25%] justify-center items-center flex flex-col gap-10 text-gray-400">
           Storage Used
           {DisplayData && DisplayData?.used > 1080 ? (
             <div

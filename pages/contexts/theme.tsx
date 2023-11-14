@@ -51,7 +51,7 @@ export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<themeType>({
-    ...theme2,
+    ...theme1,
   });
   const [sidebar, setSidebar] = useState<{
     primary: string;
@@ -59,7 +59,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     text: string;
     invertImage: boolean;
   }>({
-    ...sidebar2,
+    ...sidebar1,
   });
   const toggleTheme = () => {
     if (theme === theme1) {
