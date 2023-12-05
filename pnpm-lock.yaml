@@ -47,9 +47,6 @@ dependencies:
   tailwindcss:
     specifier: 3.3.1
     version: 3.3.1(postcss@8.4.22)
-  typescript:
-    specifier: 5.0.4
-    version: 5.0.4
 
 devDependencies:
   '@types/firebase':
@@ -67,6 +64,9 @@ devDependencies:
   '@types/styled-components':
     specifier: ^5.1.26
     version: 5.1.26
+  typescript:
+    specifier: 5.0.4
+    version: 5.0.4
 
 packages:
 
@@ -5954,7 +5954,6 @@ packages:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
     hasBin: true
-    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
