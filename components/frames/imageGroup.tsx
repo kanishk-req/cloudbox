@@ -83,27 +83,27 @@ const ImageGroup = ({
                   color: theme.secondaryText,
                 }}
               >
-                <Link href={`/smartgroup/images?id=${id}&g=${item.group}`}>
-                  <div className="m-[2.5vw] w-[70vw] h-[70vw] sm:m-[2vw] sm:w-[40vw] sm:h-[40vw] md:m-[1vw] md:h-[20vw] md:w-[20vw]">
-                    <div className="h-full w-full relative rounded-xl z-10 justify-center items-center flex">
-                      <Image
-                        src={item.url}
-                        fill
-                        placeholder="blur"
-                        blurDataURL="/image.png"
-                        className="object-cover rounded-xl blur-[1px] "
-                        alt="test"
-                      />
-                      <Image
-                        src="/icons/add_2.png"
-                        width={50}
-                        height={50}
-                        className="z-10"
-                        alt="more"
-                      />
-                    </div>
+                {/* <Link href={`/smartgroup/images?id=${id}&g=${item}`}> */}
+                <div className="m-[2.5vw] w-[70vw] h-[70vw] sm:m-[2vw] sm:w-[40vw] sm:h-[40vw] md:m-[1vw] md:h-[20vw] md:w-[20vw]">
+                  <div className="h-full w-full relative rounded-xl z-10 justify-center items-center flex">
+                    <Image
+                      src={item.url}
+                      fill
+                      placeholder="blur"
+                      blurDataURL="/image.png"
+                      className="object-cover rounded-xl blur-[1px] "
+                      alt="test"
+                    />
+                    <Image
+                      src="/icons/add_2.png"
+                      width={50}
+                      height={50}
+                      className="z-10"
+                      alt="more"
+                    />
                   </div>
-                </Link>
+                </div>
+                {/* </Link> */}
               </Div>
             ))}
           </div>
