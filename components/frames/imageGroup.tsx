@@ -83,7 +83,7 @@ const ImageGroup = ({
                   color: theme.secondaryText,
                 }}
               >
-                {/* <Link href={`/smartgroup/images?id=${id}&g=${item}`}> */}
+                <Link href={`/smartgroup/groups?id=${id}&g=${item.group}`}>
                 <div className="m-[2.5vw] w-[70vw] h-[70vw] sm:m-[2vw] sm:w-[40vw] sm:h-[40vw] md:m-[1vw] md:h-[20vw] md:w-[20vw]">
                   <div className="h-full w-full relative rounded-xl z-10 justify-center items-center flex">
                     <Image
@@ -103,7 +103,7 @@ const ImageGroup = ({
                     />
                   </div>
                 </div>
-                {/* </Link> */}
+                </Link>
               </Div>
             ))}
           </div>
