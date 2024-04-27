@@ -3,16 +3,6 @@ import { datatype, themeType } from "@/components/types";
 import { options } from "@/utils/constant";
 import Image from "next/image";
 import styled from "styled-components";
-export type FileType = {
-  image: string[];
-  video: string[];
-  audio: string[];
-  document: string[];
-  code: string[];
-  archive: string[];
-
-}
-
 const RecentImages = ({
   data,
   title,
@@ -32,8 +22,7 @@ const RecentImages = ({
     else setMenu(-1);
   };
   const getFileType = (file: string) => {
-    // filename.png.kka.png
-    const FileType: FileType = {
+    const FileType: { [key: string]: readonly string[] } = {
       image: ["png", "jpg", "jpeg", "gif", "svg"],
       video: ["mp4", "mkv", "avi", "mov"],
       audio: ["mp3", "wav", "aac"],
@@ -44,7 +33,7 @@ const RecentImages = ({
 
     const extention = file.split('.').pop()!;
     for (let key in FileType) {
-      if (FileType[key as keyof FileType].includes(extention)) {
+      if (FileType[key as keyof typeof FileType].includes(extention)) {
         return key;
       }
     }
