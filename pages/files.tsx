@@ -1,12 +1,11 @@
 import React, { useCallback, useState, useEffect } from "react";
-import Sidebar from "@/components/ui/sidebar";
-import Searchbar from "@/components/ui/searchbar";
 import { useTheme } from "./contexts/theme";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { imageType, datatype, fileType } from "@/components/types";
+import { datatype, fileType } from "@/components/types";
 import db from "@/firebase/firestore";
 import { useAuth } from "./contexts/auth";
 import FileFrame from "@/components/frames/files";
+import Layout from "@/components/layouts/baseLayout";
 
 function Documents() {
   const { theme } = useTheme();
@@ -46,43 +45,21 @@ function Documents() {
     getImageData(user?.uid);
   }, [getImageData, user?.uid]);
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
-      <Sidebar />
-      <div
-        className={`w-full max-h-[100vh]`}
-        style={{
-          backgroundColor: theme.primary,
-        }}
-      >
-        <div className="flex flex-wrap justify-evenly px-2 pt-2">
-          <Searchbar />
-        </div>
-        <div className="flex flex-wrap px-2 justify-start">
-          <div className="w-full max-h-[80vh] overflow-auto">
-            {files.length > 0
-              ? files.map((item, index) => (
-                  <FileFrame
-                    key={index}
-                    data={item.data}
-                    loadingState={loading}
-                    theme={theme}
-                    title={item.date}
-                  />
-                ))
-              : [1, 2, 3].map((item, index) => (
-                  <FileFrame key={index} loadingState={true} theme={theme} />
-                ))}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Layout>
+      {files.length > 0
+        ? files.map((item, index) => (
+          <FileFrame
+            key={index}
+            data={item.data}
+            loadingState={loading}
+            theme={theme}
+            title={item.date}
+          />
+        ))
+        : [1, 2, 3].map((item, index) => (
+          <FileFrame key={index} loadingState={true} theme={theme} />
+        ))}
+    </Layout>
   );
 }
 
