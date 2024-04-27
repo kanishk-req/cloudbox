@@ -60,7 +60,11 @@ const RecentImages = ({
                 }}
                 key={item}
               >
-                <div className="w-full h-60 p-2">
+                <div className="w-full p-2"
+                  style={{
+                    height: size == "large" ? "20vw" : size == "small" ? "15vw" : "17vw",
+                  }}
+                >
                   <div className="h-1/6 animate-pulse w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
                     <div style={{

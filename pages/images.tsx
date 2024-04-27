@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import RecentImages from "@/components/frames/images";
+import Layout from "@/components/layouts/baseLayout";
 import db from "@/firebase/firestore";
 import {
   collection,
@@ -11,11 +12,9 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "@/pages/contexts/auth";
 import { useTheme } from "@/pages/contexts/theme";
-import Sidebar from "@/components/ui/sidebar";
-import Searchbar from "@/components/ui/searchbar";
-import {datatype, imageType } from "@/components/types";
+import { datatype, imageType } from "@/components/types";
 
- 
+
 function Image() {
   const { user } = useAuth();
   const { theme } = useTheme();
@@ -45,7 +44,6 @@ function Image() {
         data[index].data.push(docData);
       }
     });
-    // Sorting the data array
     data.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
@@ -60,56 +58,23 @@ function Image() {
   }, [getImageData, user?.uid]);
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
-      <Sidebar />
-      <div
-        className={`w-full max-h-[100vh]`}
-        style={{
-          backgroundColor: theme.primary,
-        }}
-      >
-        <div className="flex flex-wrap justify-evenly px-2 pt-2">
-          <Searchbar />
-        </div>
-        <div className="flex flex-wrap px-2 justify-start">
-          <div className="w-full max-h-[80vh] overflow-auto" 
-            style={{
-              backgroundColor: theme.primary,
-            }}
-          >
-            {images.length > 0
-              ? images.map((item, index) => (
-                  <RecentImages
-                    key={index}
-                    data={item.data}
-                    loadingState={loading}
-                    theme={theme}
-                    title={item.date}
-                  />
-                ))
-              : [1, 2, 3].map((item, index) => (
-                  <RecentImages key={index} loadingState={true} theme={theme} />
-                ))}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Layout>
+      {images.length > 0
+        ? images.map((item, index) => (
+          <RecentImages
+            key={index}
+            data={item.data}
+            loadingState={loading}
+            theme={theme}
+            title={item.date}
+          />
+        ))
+        : [1, 2, 3].map((item, index) => (
+          <RecentImages key={index} loadingState={true} theme={theme} />
+        ))}
+    </Layout>
+
   );
 }
 
 export default Image;
-{
-  /* <RecentImages
-            data={images}
-            loadingState={loading}
-            theme={theme}
-            title="Recent Images"
-          /> */
-}

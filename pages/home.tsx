@@ -5,8 +5,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import RecentImages from "@/components/frames/recentImages";
 import RecentFiles from "@/components/frames/recentFiles";
-import Searchbar from "@/components/ui/searchbar";
-import { datatype, themeType } from "@/components/types";
+import { datatype } from "@/components/types";
 import { useAuth } from "./contexts/auth";
 import {
   collection,
@@ -19,6 +18,7 @@ import {
 import db from "@/firebase/firestore";
 import { useTheme } from "./contexts/theme";
 import { useMediaQuery } from "./contexts/mediaQuery";
+import Layout from "@/components/layouts/baseLayout";
 
 function Home() {
   const { theme } = useTheme();
@@ -48,14 +48,8 @@ function Home() {
   }, [getImageData, user?.uid]);
 
   return (
-    <div
-      className={`w-full max-h-[100vh] overflow-auto`}
-      style={{
-        backgroundColor: theme.primary,
-      }}
-    >
+    <Layout>
       <div className="flex flex-wrap justify-evenly p-2">
-        <Searchbar />
         <RecentImages
           data={data.slice(0, isMobile ? 2 : 4)}
           loadingState={loading}
@@ -72,7 +66,8 @@ function Home() {
           title="Images"
         />
       </div>
-    </div>
+    </Layout>
+
   );
 }
 
