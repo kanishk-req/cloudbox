@@ -59,6 +59,7 @@ function Home() {
         <RecentImages
           data={data.slice(0, isMobile ? 2 : 4)}
           loadingState={loading}
+          size="large"
           theme={theme}
           title="Recent Images"
         />
@@ -66,6 +67,7 @@ function Home() {
         <RecentImages
           data={data.slice(isMobile ? 2 : 4, isMobile ? 6 : 10)}
           theme={theme}
+          size="small"
           loadingState={loading}
           title="Images"
         />

@@ -8,11 +8,13 @@ const RecentImages = ({
   title,
   theme,
   loadingState,
+  size = "medium"
 }: {
   data: datatype[];
   loadingState: boolean;
   title: string;
   theme: themeType;
+  size?: "small" | "medium" | "large"
 }) => {
   const [menu, setMenu] = useState<number>(-1);
   const options = [
@@ -51,19 +53,20 @@ const RecentImages = ({
           >
             {title}
           </h1>
-          <div className="flex flex-wrap px-5 gap-9">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-5">
             {[1, 2, 3, 4].map((item) => (
               <Div
-                className={`rounded-lg focus:ring-4 focus:outline-none sm:w-[23%] md:w-[23%] lg:w-[23%] w-full`}
+                className={`rounded-lg focus:ring-4 focus:outline-none w-full h-full`}
                 style={{
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,
                 }}
                 key={item}
               >
-                <div className="w-full h-[30vh] p-2">
-                  <div className="h-1/6 animate-pulse w-full  z-10 flex justify-between capitalize items-center">
-                    <div className="bg-gray-300 h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
+                <div className={`w-full p-2 ${size == "large" ? "h-[75vw] sm:h-[24vw]" : size == "small" ? "h-[60vw] sm:h-[16vw]" : "h-[70vw] sm:h-[20vw]"} `}>
+                  <div className={`relative w-full  z-20 flex justify-between pl-2 capitalize items-center 
+                    ${size == "large" ? "h-[13%]" : "h-1/6"}`}>
+                    <div className="bg-gray-300 animate-pulse h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
                     <div
                       style={{
                         filter: theme.invertImage ? "invert(1)" : "invert(0)",
@@ -79,8 +82,7 @@ const RecentImages = ({
                   </div>
                   <div
                     role="status"
-                    className=" h-5/6 space-y-8 animate-pulse md:space-y-0 md:space-x-8 md:flex md:items-center"
-                  >
+                    className={`relative space-y-8 animate-pulse w-full z-10 ${size == "large" ? "h-[87%]" : "h-5/6"}`}>
                     <div className="h-full relative  w-full flex items-center justify-center z-10 bg-gray-300 rounded dark:bg-gray-500 ">
                       <svg
                         className="w-12 h-12 text-gray-200"
@@ -109,21 +111,23 @@ const RecentImages = ({
             {title}
           </h1>
 
-          <div className="flex flex-wrap px-5 gap-9">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-5">
             {data.map((item, index) => (
               <Div
                 key={index}
-                className={`rounded-lg focus:ring-4 focus:outline-none sm:w-[23%] md:w-[23%] lg:w-[23%] w-full`}
+                className={`rounded-lg focus:ring-4 focus:outline-none w-full h-full`}
                 style={{
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,
                 }}
               >
                 {/* <Link href={`/image/${item.id}`}> */}
-                <div className="w-full h-[30vh] p-2">
-                  <div className="h-1/6  relative w-full  z-20 flex justify-between pl-2 capitalize items-center">
-                    {item.date}
-
+                <div className={`w-full p-2 ${size == "large" ? "h-[75vw] sm:h-[24vw]" : size == "small" ? "h-[60vw] sm:h-[16vw]" : "h-[70vw] sm:h-[20vw]"} `}>
+                  <div className={`relative w-full  z-20 flex justify-between pl-2 capitalize items-center 
+                    ${size == "large" ? "h-[13%]" : "h-1/6"}`}>
+                    <p className="text-xs">
+                      {item.date}
+                    </p>
                     {index !== -1 && menu === index ? (
                       <div
                         className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
@@ -206,7 +210,7 @@ const RecentImages = ({
                     )}
                   </div>
 
-                  <div className="h-5/6 relative  w-full z-10 ">
+                  <div className={`relative w-full z-10 ${size == "large" ? "h-[87%]" : "h-5/6"}`}>
                     <Image
                       src={item.url}
                       fill

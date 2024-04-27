@@ -54,7 +54,7 @@ function Smartshare() {
       // setProgress(0);
       setFile(null);
       setSmartId(
-        `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`
+        `${window.location.host}/smartshow?id=${id}-${user?.uid}`
       );
       // Store the URL in localStorage
       const urls = localStorage.getItem("urls");
@@ -67,7 +67,7 @@ function Smartshare() {
             dropDown.split(" ")[1] !== "week"
               ? parseInt(dropDown.split(" ")[0])
               : parseInt(dropDown.split(" ")[0]) * 7,
-          url: `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`,
+          url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
         });
         localStorage.setItem("urls", JSON.stringify(urlsArr));
       } else {
@@ -80,7 +80,7 @@ function Smartshare() {
                 dropDown.split(" ")[1] !== "week"
                   ? parseInt(dropDown.split(" ")[0])
                   : parseInt(dropDown.split(" ")[0]) * 7,
-              url: `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`,
+              url:`${window.location.host}/smartshow?id=${id}-${user?.uid}`,
             },
           ])
         );

@@ -1,45 +1,54 @@
 import { useEffect, useState } from "react";
 import { datatype, themeType } from "@/components/types";
+import { options } from "@/utils/constant";
 import Image from "next/image";
 import styled from "styled-components";
-import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+export type FileType = {
+  image: string[];
+  video: string[];
+  audio: string[];
+  document: string[];
+  code: string[];
+  archive: string[];
+
+}
 
 const RecentImages = ({
   data,
   title,
   theme,
   loadingState,
+  size = "medium",
 }: {
   data?: datatype[];
   loadingState: boolean;
   title?: string;
   theme?: themeType;
+  size?: "small" | "medium" | "large";
 }) => {
   const [menu, setMenu] = useState<number>(-1);
   const handleClick = (index: number) => {
     if (index !== menu) setMenu(index);
     else setMenu(-1);
   };
-  const options = [
-    {
-      name: "Open",
-      onClick: () => {
-        alert("Opening ");
-      },
-    },
-    {
-      name: "Delete",
-      onClick: () => {
-        alert("Deleting ");
-      },
-    },
-    {
-      name: "share",
-      onClick: () => {
-        alert("sharing ");
-      },
-    },
-  ];
+  const getFileType = (file: string) => {
+    // filename.png.kka.png
+    const FileType: FileType = {
+      image: ["png", "jpg", "jpeg", "gif", "svg"],
+      video: ["mp4", "mkv", "avi", "mov"],
+      audio: ["mp3", "wav", "aac"],
+      document: ["doc", "docx", "pdf", "txt", "ppt", "pptx", "xls", "xlsx"],
+      code: ["html", "css", "js", "ts", "jsx", "tsx", "py", "java", "c", "cpp", "cs", "php", "rb", "go", "swift", "kt", "dart"],
+      archive: ["zip", "rar", "tar", "7z", "gz", "xz"],
+    } as const;
+
+    const extention = file.split('.').pop()!;
+    for (let key in FileType) {
+      if (FileType[key as keyof FileType].includes(extention)) {
+        return key;
+      }
+    }
+  }
   return (
     <>
       {loadingState ? (
@@ -66,8 +75,8 @@ const RecentImages = ({
                   <div className="h-1/6 animate-pulse w-full  z-10 flex justify-between capitalize items-center">
                     <div className="bg-gray-300 h-5 w-1/2 rounded-lg dark:bg-gray-500"></div>
                     <div style={{
-                          filter: theme?.invertImage ? "invert(1)" : "invert(0)",
-                        }}>
+                      filter: theme?.invertImage ? "invert(1)" : "invert(0)",
+                    }}>
                       <Image
                         src="/threeDotsVertical.svg"
                         width={20}
@@ -119,7 +128,11 @@ const RecentImages = ({
                 }}
               >
                 {/* <Link href={`/image/${item.id}`}> */}
-                <div className="w-full h-52 p-2">
+                <div className="w-full p-2"
+                  style={{
+                    height: size == "large" ? "20vw" : size == "small" ? "15vw" : "17vw",
+                  }}
+                >
                   <div className="h-1/6  w-full relative z-10 flex justify-between pl-2 capitalize items-center">
                     {item.date}
                     {index !== -1 && menu === index ? (
@@ -165,14 +178,14 @@ const RecentImages = ({
                           color: theme?.secondaryText,
                         }}
                       >
-                        {options.map((Optionitem, key) => (
+                        {options.map((optionItem, key) => (
                           <div
                             key={key}
                             className="w-full h-1/3 flex justify-center items-center rounded-md"
                           >
                             <div
                               onClick={() => {
-                                Optionitem.onClick?.call(item);
+                                optionItem.onClick?.call(null, item);
                               }}
                               className="w-full h-8 flex justify-center items-center hover:bg-gray-200 hover:text-gray-700"
                               style={{
@@ -180,23 +193,23 @@ const RecentImages = ({
                                   key === options.length - 1
                                     ? "1px solid lightgray"
                                     : key === 0
-                                    ? "none"
-                                    : "1px solid lightgray",
+                                      ? "none"
+                                      : "1px solid lightgray",
                                 borderBottom:
                                   key === 0
                                     ? "1px solid lightgray"
                                     : key === options.length - 1
-                                    ? "none"
-                                    : "1px solid lightgray",
+                                      ? "none"
+                                      : "1px solid lightgray",
                                 borderRadius:
                                   key === 0
                                     ? "6px 6px 0 0"
                                     : key === options.length - 1
-                                    ? "0 0 6px 6px"
-                                    : "none",
+                                      ? "0 0 6px 6px"
+                                      : "none",
                               }}
                             >
-                              {Optionitem.name}
+                              {/* {Optionitem.name} || {getFileType(item.url)} */}
                             </div>
                           </div>
                         ))}

@@ -5,8 +5,8 @@ import { themeType } from "@/components/types";
 import { useMediaQuery } from "@/pages/contexts/mediaQuery";
 
 const RecentFiles = ({ theme }: { theme: themeType }) => {
-  const {isMobile} = useMediaQuery();
-  const data = [
+  const { isMobile, isTablet } = useMediaQuery();
+  let data = [
     {
       id: 1,
       name: "Folder1",
@@ -24,6 +24,9 @@ const RecentFiles = ({ theme }: { theme: themeType }) => {
       name: "Folder4",
     },
   ];
+  if (isMobile) {
+    data = data.slice(0, 2);
+  }
   return (
     <div className="w-full h-full">
       <h1
@@ -41,22 +44,22 @@ const RecentFiles = ({ theme }: { theme: themeType }) => {
         }}
       >
         {data.map((item) => (
-          <div key={item.id} className="h-full" 
+          <div key={item.id} className="h-full"
             style={{
-              width: isMobile ? "48%" : "10vw",
+              width: isMobile ? "48%" : isTablet ? "30%" : "auto",
             }}
           >
             <Link href={`/image/${item.id}`}>
               <button
                 type="button"
                 className={`inline-flex border border-transparent 
-                  items-center justify-evenly  px-6 
+                  items-center justify-evenly 
                   text-sm font-medium
                   rounded-lg focus:outline-none w-full`}
                 style={{
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,
-                  padding: isMobile ? "1.25rem 0" : "1rem 0",
+                  padding: isMobile ? "4vw 2vw 4vw 0vw" : "1rem 2vw 1rem 1vw",
                 }}
               >
                 <span
@@ -74,30 +77,69 @@ const RecentFiles = ({ theme }: { theme: themeType }) => {
             </Link>
           </div>
         ))}
-              <div >
+        {isMobile && (
+          <div className="h-full"
+            style={{
+              width: isMobile ? "48%" : isTablet ? "30%" : "auto",
+            }}
+          >
+            <Link href={`#`}>
               <button
                 type="button"
-                className={`inline-flex border border-transparent 
-                  items-center justify-evenly px-6 py-2 
-                  text-sm font-medium  
-                  rounded-lg focus:outline-none`}
+                className={`inline-flex border border-transparent items-center justify-evenly text-sm font-medium rounded-lg focus:outline-none w-full`}
                 style={{
-                  width: isMobile ? "186%" : "10vw",
                   backgroundColor: theme.secondary,
                   color: theme.secondaryText,
+                  padding: isMobile ? "4vw 2vw 4vw 0vw" : "1rem 2vw 1rem 1vw",
                 }}
               >
                 <span
-                  className={`inline-flex items-center w-8 h-8 mr-3 my-2 relative rounded-full`}
+                  className={`inline-flex items-center my-2 relative rounded-full`}
                   style={{
-                    filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                    margin: isMobile ? "0 0.25rem" : "0 0.5rem",
+                    height: "2rem",
+                    width: "2rem",
                   }}
                 >
-                  <Image alt="folder" fill src="/icons8-plus-30.svg" />
+                  <Image alt="folder" fill src="/file.svg" />
                 </span>
-                New Folder
+                More ...
               </button>
+            </Link>
           </div>
+        )}
+        <div className="h-full"
+          style={{
+            width: isMobile ? "48%" : isTablet ? "30%" : "auto",
+          }}
+        >
+          <Link href={`#`}>
+            <button
+              type="button"
+              className={`inline-flex border border-transparent 
+                  items-center justify-evenly  px-6 
+                  text-sm font-medium
+                  rounded-lg focus:outline-none w-full`}
+              style={{
+                backgroundColor: theme.secondary,
+                color: theme.secondaryText,
+                padding: isMobile ? "4vw 2vw 4vw 0vw" : "1rem 2vw 1rem 1vw",
+              }}
+            >
+              <span
+                className={`inline-flex items-center my-2 relative rounded-full`}
+                style={{
+                  margin: isMobile ? "0 0.25rem" : "0 0.5rem",
+                  height: "2rem",
+                  width: "2rem",
+                }}
+              >
+                <Image alt="folder" fill src="/icons8-plus-30.svg" />
+              </span>
+              Add New
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
