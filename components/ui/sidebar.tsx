@@ -2,15 +2,17 @@
 /* eslint-disable jsx-a11y/alt-text */
 // eslint-disable-next-line @next/next/no-img-element
 
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Styled from "styled-components";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useTheme } from "@/pages/contexts/theme";
 import { useMediaQuery } from "@/pages/contexts/mediaQuery";
 
 const Sidebar = () => {
   const { sidebar } = useTheme();
-  const [open, setOpen] = useState(true);
+  const router = useRouter()
+  const [open, setOpen] = useState(false);
   const { isMobile } = useMediaQuery();
 
   useEffect(() => {
@@ -18,9 +20,6 @@ const Sidebar = () => {
     if (sidebar && !isMobile) {
       const { open } = JSON.parse(sidebar);
       setOpen(open);
-    }
-    if (isMobile) {
-      setOpen(false);
     }
   }, [isMobile]);
 
@@ -32,26 +31,24 @@ const Sidebar = () => {
     { title: "Home", src: "Chart_fill", link: "/" },
     { title: "Images", src: "Chat", link: "/images" },
     { title: "Files", src: "Folder", link: "/files" },
-    { title: "Smart Share", src: "Calendar", gap: true, link: "/smartshare" },
-    { title: "Api", src: "Search", link: "/CloudBoxApi" },
+    { title: "Api", gap: true, src: "Search", link: "/CloudBoxApi" },
     { title: "Storage", src: "Chart", link: "/storage" },
-    { title: "Setting", src: "Setting" },
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
+    { title: "Smart Share", src: "Calendar", link: "/smartshare" },
+    { title: "Setting", src: "Setting", position: "bottom", revert: true },
   ];
 
   return (
     <div
-      className={` ${open ? "w-72" : "w-20 "} h-screen p-5 pt-8 relative 
-      duration-200 transition-all overflow-hidden
-      `}
+      className={`${open ? "w-72" : "w-20"} h-screen p-5 pt-8 relative duration-200 transition-all overflow-hidden hidden`}
       style={{
         backgroundColor: sidebar.primary,
         color: sidebar.text,
-        display: isMobile ? "none" : "block",
+        display: !isMobile ? "block" : "none",
       }}
     >
       <div
-        className="flex gap-x-4 items-center "
+        className="flex gap-x-4 items-center relative"
         onClick={() => setOpen(!isMobile && !open)}
       >
         <img
@@ -62,9 +59,8 @@ const Sidebar = () => {
           }}
         />
         <h1
-          className={`origin-left font-medium text-xl ${
-            open ? "w-52 delay-150" : "w-0"
-          } overflow-hidden transition-width`}
+          className={`origin-left font-medium text-xl ${open ? "w-52 delay-150" : "w-0"
+            } overflow-hidden transition-width`}
         >
           Cloud Box
         </h1>
@@ -74,12 +70,14 @@ const Sidebar = () => {
           <Link href={Menu?.link ?? ""} key={index}>
             <Li
               color={sidebar.hover}
-              className={`flex p-2 cursor-pointer rounded-full
-                text-sm items-center gap-x-4 
-                ${Menu.gap ? "mt-9" : "mt-2"} ${
-                index === 0 && "bg-light-white"
-              } `}
-            >
+              className={`flex p-2 cursor-pointer rounded-full text-sm items-center 
+                ${Menu.position === "bottom" && "absolute bottom-6"}
+                ${Menu.gap ? "mt-9" : "mt-2"} 
+                ${index === 0 && "bg-light-white"} 
+                ${open ? "gap-x-4" : "gap-x-0"}`}
+              style={{
+                backgroundColor: router.pathname === Menu.link ? sidebar.hover : ""
+              }}>
               <img
                 src={`/${Menu.src}.png`}
                 style={{
@@ -87,9 +85,7 @@ const Sidebar = () => {
                 }}
               />
               <span
-                className={`${
-                  open ? "w-52 delay-150" : "w-0"
-                } overflow-hidden transition-width `}
+                className={`overflow-hidden transition-width ${open ? "w-40 delay-150" : "w-0"}`}
               >
                 {Menu.title}
               </span>
