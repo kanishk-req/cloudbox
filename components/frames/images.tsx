@@ -159,7 +159,7 @@ const RecentImages = ({
                             <div
                               className="w-full h-8 flex justify-center items-center hover:bg-gray-200 hover:text-gray-700"
                               onClick={() => {
-                                Optionitem.onClick?.call(item);
+                                Optionitem.onClick?.call(null,item);
                               }}
                               style={{
                                 borderTop:

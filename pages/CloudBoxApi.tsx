@@ -29,7 +29,7 @@ const Api = ({ source }: { source: any }) => {
         <div className="flex flex-wrap justify-evenly p-2">
           <Searchbar />
         </div>
-        <div className="flex flex-wrap px-10 justify-start" 
+        <div className="px-10" 
           style={{
             backgroundColor: theme.primary,
             color: theme.text,
