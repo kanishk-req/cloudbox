@@ -99,6 +99,7 @@ export const ImageStatus = ({
   );
 };
 export function UploadFile() {
+  const { theme } = useTheme();
   const { user } = useAuth();
   const [progress, setProgress] = useState<number>(0);
   const [urls, setUrls] = useState<TempFilesData[]>([]);
@@ -109,7 +110,10 @@ export function UploadFile() {
 
   return (
     <Layout>
-      <div className="w-full max-h-[55vh] overflow-auto gap-9 flex flex-row">
+      <div className="w-full max-h-[55vh] overflow-auto gap-9 flex flex-row"
+        style={{
+          color: theme.text,
+        }}>
         <div className="px-[2vw] w-1/2">
           <h1 className="text-2xl mb-4">Upload</h1>
           <div className="flex items-center w-full">
@@ -118,7 +122,7 @@ export function UploadFile() {
         </div>
         <ImageStatus urls={urls} status={progress} />
       </div>
-      <Preview urls={urls} />
+      <Preview urls={urls} theme={theme} />
     </Layout>
   );
 }

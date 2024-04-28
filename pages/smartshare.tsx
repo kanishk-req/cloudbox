@@ -8,6 +8,7 @@ import { useAuth } from "./contexts/auth";
 import db from "@/firebase/firestore";
 import { addDoc, collection, setDoc, doc } from "firebase/firestore";
 import Layout from "@/components/layouts/baseLayout";
+import { themeType } from "@/components/types";
 
 export interface TempFilesData {
   file: File;
@@ -140,7 +141,11 @@ function Smartshare() {
 
   return (
     <Layout>
-      <div className="flex flex-wrap p-2 justify-start gap-[2rem]">
+      <div className="flex flex-wrap p-2 justify-start gap-[2rem]"
+        style={{
+          color: theme.text,
+        }}
+      >
         <div className="w-full max-h-[55vh] overflow-auto gap-9 flex flex-row">
           <div className="px-[2vw] w-1/2">
             <h1 className="text-2xl mb-4">Smart Share</h1>
@@ -241,7 +246,7 @@ function Smartshare() {
           </div>
           <SmartShareLink />
         </div>
-        <Preview urls={urls} />
+        <Preview urls={urls} theme={theme} />
       </div>
       {ModalState && (
         <div
@@ -374,10 +379,17 @@ function Smartshare() {
 
 export default Smartshare;
 
-export const Preview = ({ urls }: { urls: TempFilesData[] }) => {
+export const Preview = ({ urls, theme }: {
+  urls: TempFilesData[], theme: themeType
+
+}) => {
   return (
     <div className="px-[2vw] max-w-[80vw] w-full h-[34vh]">
-      <h1 className="text-2xl mb-4">Preview</h1>
+      <h1 className="text-2xl mb-4"
+        style={{
+          color: theme.text,
+        }}
+      >Preview</h1>
       <div className="flex h-[30vh] gap-3  overflow-y-hidden overflow-x-auto ">
         {urls && urls.length > 0
           ? urls.map((url, k) => (
