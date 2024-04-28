@@ -2,11 +2,11 @@ import React from "react";
 import Sidebar from "@/components/ui/sidebar";
 import Image from "next/image";
 import { useAuth } from "./contexts/auth";
-import { useTheme } from "./contexts/theme";
+import { useTheme, sidebar1, sidebar2, theme1, theme2 } from "./contexts/theme";
 
 function Profile() {
   const { user, UpdateUserDetails, signOut } = useAuth();
-  const { theme } = useTheme(); 
+  const { theme, setTheme, setSidebar } = useTheme();
   const logout = () => {
     signOut();
     window.location.href = "/";
@@ -26,6 +26,21 @@ function Profile() {
       photoUrl: user?.photoURL ?? "",
     });
   }, [user]);
+
+  const changeTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const theme = e.target.value;
+    if (theme === "light") {
+      setTheme(theme1);
+      setSidebar(sidebar1);
+
+    } else if (theme === "dark") {
+      setTheme(theme2);
+      setSidebar(sidebar2);
+    } else {
+      setTheme(theme1);
+      setSidebar(sidebar1);
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,7 +62,7 @@ function Profile() {
     setInterval(() => {
       setCopyState(false);
     }
-    , 3000);
+      , 3000);
   };
 
   return (
@@ -57,6 +72,7 @@ function Profile() {
         width: "100vw",
         display: "flex",
         flexDirection: "row",
+        backgroundColor: theme.primary,
       }}
     >
       <Sidebar />
@@ -65,9 +81,7 @@ function Profile() {
           <div
             id="imageHolder"
             className="w-32 h-32 rounded-full  relative"
-            style={{
-              backgroundColor: theme.primary,
-            }}
+            
             onClick={() => setModalState(true)}
           >
             <input
@@ -82,13 +96,18 @@ function Profile() {
             />
           </div>
         </div>
-        <form className="px-[5vw] pt-[5vh]" onSubmit={handleSubmit}>
+        <form className="px-[5vw] pt-[5vh]" onSubmit={handleSubmit} style={{
+          color: theme.text,
+        }}>
           <div className="relative z-0 w-full mb-6 group">
             <input
               type="text"
               name="floating_name"
               id="floating_name"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none"
+              className="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none"
+              style={{
+                borderColor: theme.secondary,
+              }}
               placeholder=" "
               value={userDetails.name}
               disabled={user?.displayName ? true : false}
@@ -99,7 +118,10 @@ function Profile() {
             {userDetails.name.length <= 0 && (
               <label
                 htmlFor="floating_name"
-                className="peer-focus:font-medium absolute text-sm text-gray-500"
+                className="peer-focus:font-medium absolute text-sm"
+                style={{
+                  color: theme.secondaryText,
+                }}
               >
                 Name
               </label>
@@ -110,8 +132,11 @@ function Profile() {
               type="email"
               name="floating_company"
               id="floating_company"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none"
+              className="block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none"
               placeholder=" "
+              style={{
+                borderColor: theme.secondary,
+              }}
               value={userDetails.email}
               disabled={user?.email ? true : false}
               onChange={(e) =>
@@ -121,7 +146,10 @@ function Profile() {
             {userDetails.email.length <= 0 && (
               <label
                 htmlFor="floating_company"
-                className="peer-focus:font-medium absolute text-sm text-gray-500"
+                className="peer-focus:font-medium absolute text-sm"
+                style={{
+                  color: theme.secondaryText,
+                }}
               >
                 Email
               </label>
@@ -129,16 +157,20 @@ function Profile() {
           </div>
           <div className="relative z-0 w-full mb-6 group ">
             <label className="text-sm text-gray-500mr-4">
-              Secret Token : 
+              Secret Token :
             </label>
             <input
               type="text"
               value={user?.uid}
-              className="text-sm w-[16rem] p-2 mx-2 text-gray-900 bg-transparent  appearance-none"
+              className="text-sm w-[16rem] p-2 mx-2  appearance-none rounded-md"
+              style={{ backgroundColor: theme.secondary }}
             />
             {/* copy button */}
             <button
-              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100  font-medium rounded-lg text-sm px-3 py-1.5 mr-2 mb-2 "
+              className=" border focus:outline-none  font-medium rounded-lg text-sm px-3 py-1.5 mr-2 mb-2"
+              style={{
+                borderColor: theme.secondary,
+              }}
               onClick={() => {
                 handleCopy()
               }}
@@ -148,7 +180,27 @@ function Profile() {
               }
             </button>
           </div>
-
+          <div className="max-w-sm mb-6">
+            <label
+              htmlFor="countries"
+              className="block mb-2 text-sm font-medium "
+            >
+              Select Theme
+            </label>
+            <select
+              id="countries"
+              className="border  text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-4 focus:ring-blue-300"
+              onChange={changeTheme}
+              style={{
+                backgroundColor: theme.secondary,
+                borderColor: theme.secondary,
+              }}
+            >
+              <option selected>default</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
           <button
             type="submit"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
@@ -162,6 +214,7 @@ function Profile() {
           >
             Logout
           </button>
+
         </form>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { themeType } from "@/components/types";
-const theme2 = {
+export const theme2 = {
   primary: "#343541",
   secondary: "#3E3F4B",
   accent: "#6594d7",
@@ -9,7 +9,7 @@ const theme2 = {
   invertImage: true,
 
 };
-const theme1 = {
+export const theme1 = {
   primary: "#FFFFFF",
   secondary: "#f2f2f2",
   accent: "#f09b6d",
@@ -18,13 +18,13 @@ const theme1 = {
   invertImage: false,
 
 };
-const sidebar2 = {
+export const sidebar2 = {
   primary: "#202123",
   hover: "#3E3F4B",
   text: "white",
   invertImage: false,
 };
-const sidebar1 = {
+export const sidebar1 = {
   primary: "#E0E0E0",
   hover: "#f1f1f1",
   text: "black",
@@ -38,13 +38,22 @@ type themeContextType = {
     text: string;
     invertImage: boolean;
   };
+  setTheme: (theme: themeType) => void;
+  setSidebar: (sidebar: {
+    primary: string;
+    hover: string;
+    text: string;
+    invertImage: boolean;
+  }) => void;
   toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<themeContextType>({
   theme: theme1,
   sidebar: sidebar1,
-  toggleTheme: () => {},
+  setTheme: () => { },
+  setSidebar: () => { },
+  toggleTheme: () => { },
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -76,9 +85,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       setTheme(theme2);
       setSidebar(sidebar2);
     }
-  }, []);    
+  }, []);
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, sidebar }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, sidebar, setSidebar, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
