@@ -31,7 +31,7 @@ const Sidebar = () => {
     { title: "Home", src: "Chart_fill", link: "/" },
     { title: "Images", src: "Chat", link: "/images" },
     { title: "Files", src: "Folder", link: "/files" },
-    { title: "Api", gap: true, src: "Search", link: "/CloudBoxApi" },
+    { title: "Api", gap: true, src: "Search", link: "/cloudBoxApi" },
     { title: "Storage", src: "Chart", link: "/storage" },
     { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
     { title: "Smart Share", src: "Calendar", link: "/smartshare" },
