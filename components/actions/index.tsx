@@ -5,7 +5,7 @@ import { options } from '../../utils/constant/index';
 import OptionsModal from '../modals/optionsModal';
 
 export type ModalState = Dispatch<SetStateAction<ModalObject>>
-export type ActionState = "open" | "delete" | "share";
+export type ActionState = "open" | "delete" | "share" | "download";
 export type ModalObject = {
     status: string;
     item: {
@@ -16,7 +16,8 @@ export type ModalObject = {
 export enum Action {
     open = "open",
     delete = "delete",
-    share = "share"
+    share = "share",
+    download = "download"
 }
 
 export const Actions = ({ theme, item, index }: {
@@ -41,9 +42,26 @@ export const Actions = ({ theme, item, index }: {
             case Action.share:
                 setModal({ status: Action.share, item: item });
                 break;
+            case Action.download:
+                handleDownload(item);
+                break
             default:
                 break;
         }
+    }
+    const handleDownload = async (item: datatype) => {
+        fetch(item.url)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${item.name}`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
     }
     return (
         <React.Fragment>
@@ -84,9 +102,9 @@ export const Actions = ({ theme, item, index }: {
             )}
             {index !== -1 && menu === index && (
                 <div
-                    className="absolute top-[2.5rem] z-10 right-1  rounded-md w-[6rem] h-[6rem]"
+                    className="absolute top-[3rem] z-10 right-1  rounded-md w-[10rem] h-[auto] p-3"
                     style={{
-                        backgroundColor: theme.secondary,
+                        backgroundColor: theme.primary,
                         color: theme.secondaryText,
                     }}
                 >
@@ -95,31 +113,12 @@ export const Actions = ({ theme, item, index }: {
                             key={key}
                             className="w-full h-1/3 flex justify-center items-center rounded-md"
                         >
+
                             <div
                                 onClick={() => {
                                     handleAction(Optionitem.name as ActionState, item);
                                 }}
-                                className="w-full h-8 flex cursor-pointer justify-center items-center hover:bg-gray-200 hover:text-gray-700"
-                                style={{
-                                    borderTop:
-                                        key === options.length - 1
-                                            ? "1px solid lightgray"
-                                            : key === 0
-                                                ? "none"
-                                                : "1px solid lightgray",
-                                    borderBottom:
-                                        key === 0
-                                            ? "1px solid lightgray"
-                                            : key === options.length - 1
-                                                ? "none"
-                                                : "1px solid lightgray",
-                                    borderRadius:
-                                        key === 0
-                                            ? "6px 6px 0 0"
-                                            : key === options.length - 1
-                                                ? "0 0 6px 6px"
-                                                : "none",
-                                }}
+                                className="w-full p-2 rounded-md flex cursor-pointer pl-2 items-center hover:bg-gray-200 hover:text-gray-700"
                             >
                                 {Optionitem.name}
                             </div>
