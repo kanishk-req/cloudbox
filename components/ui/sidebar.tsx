@@ -28,14 +28,14 @@ const Sidebar = () => {
   }, [open]);
 
   const Menus = [
-    { title: "Home", src: "Chart_fill", link: "/" },
-    { title: "Images", src: "Chat", link: "/images" },
-    { title: "Files", src: "Folder", link: "/files" },
-    { title: "Api", gap: true, src: "Search", link: "/cloudBoxApi" },
-    { title: "Storage", src: "Chart", link: "/storage" },
-    { title: "Upload", src: "Folder", gap: true, link: "uploadFile" },
-    { title: "Smart Share", src: "Calendar", link: "/smartshare" },
-    { title: "Setting", src: "Setting", position: "bottom", revert: true },
+    { title: "Home", src: "home", link: "/" },
+    { title: "Images", src: "images", link: "/images" },
+    { title: "Files", src: "files", link: "/files" },
+    { title: "Api", gap: true, src: "api", link: "/cloudBoxApi" },
+    { title: "Storage", src: "storage", link: "/storage" },
+    { title: "Upload", src: "upload", gap: true, link: "uploadFile" },
+    { title: "Smart Share", src: "smartshare", link: "/smartshare" },
+    { title: "Setting", src: "settings", position: "bottom", revert: true },
   ];
 
   return (
@@ -81,7 +81,7 @@ const Sidebar = () => {
               <img
                 src={`/${Menu.src}.png`}
                 style={{
-                  filter: `invert(${sidebar.invertImage ? "1" : "0"})`,
+                  filter: `invert(${sidebar.invertImage ? "0" : "1"})`,
                 }}
               />
               <span

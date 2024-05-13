@@ -134,7 +134,11 @@ const RecentFiles = ({ theme }: { theme: themeType }) => {
                   width: "2rem",
                 }}
               >
-                <Image alt="folder" fill src="/icons8-plus-30.svg" />
+                <Image alt="folder" fill src="/icons8-plus-30.svg"
+                  style={{
+                    filter: `invert(${theme?.sidebar?.invertImage ? "0" : "1"})`,
+                  }}
+                />
               </span>
               Add New
             </button>

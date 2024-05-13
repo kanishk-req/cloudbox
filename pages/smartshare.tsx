@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useTheme } from "./contexts/theme";
 import Image from "next/image";
 import storage from "@/firebase/storage";
@@ -18,25 +18,26 @@ export interface TempFilesData {
 function Smartshare() {
   const { theme } = useTheme();
   const [dropDown, setDropDown] = useState<string>("off");
-  const [file, setFile] = useState<File | null>(null);
-  const [urls, setUrl] = useState<TempFilesData[]>([]);
+  const [files, setFiles] = useState<File[]>([]); // Store multiple files
+  const [urls, setUrls] = useState<TempFilesData[]>([]);
   const { user } = useAuth();
   const randomId = Math.random().toString(36).substring(7);
   const [smartId, setSmartId] = useState<string>("");
-  const [copyState, setCopyState] = React.useState(false);
-  const [ModalState, setModalState] = React.useState(false);
+  const [copyState, setCopyState] = useState(false);
+  const [modalState, setModalState] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(smartId);
     setCopyState(true);
-    setInterval(() => {
+    setTimeout(() => {
       setCopyState(false);
     }, 3000);
   };
-  const uploadFileToFirestore = (downloadURL: string, SmartName: string) => {
+
+  const uploadFileToFirestore = async (downloadURL: string, SmartName: string) => {
     try {
       const id = randomId;
-      setDoc(doc(db, `User/${user?.uid}/Smartshare/${id}`), {
+      await setDoc(doc(db, `User/${user?.uid}/Smartshare/${id}`), {
         name: SmartName,
         time:
           dropDown.split(" ")[1] !== "week"
@@ -44,52 +45,52 @@ function Smartshare() {
             : parseInt(dropDown.split(" ")[0]) * 7,
         date: new Date().toDateString(),
       });
-      addDoc(collection(db, `User/${user?.uid}/Smartshare/${randomId}/files`), {
-        name: file?.name,
-        size: file?.size,
-        type: file?.type,
+      await addDoc(collection(db, `User/${user?.uid}/Smartshare/${randomId}/files`), {
+        name: files[0]?.name,
+        size: files[0]?.size,
+        type: files[0]?.type,
         url: downloadURL,
       });
 
-      // setProgress(0);
-      setFile(null);
-      setSmartId(
-        `${window.location.host}/smartshow?id=${id}-${user?.uid}`
-      );
-      // Store the URL in localStorage
-      const urls = localStorage.getItem("urls");
-      if (urls) {
-        const urlsArr = JSON.parse(urls);
-        urlsArr.push({
-          name: SmartName,
-          date: new Date().toDateString(),
-          time:
-            dropDown.split(" ")[1] !== "week"
-              ? parseInt(dropDown.split(" ")[0])
-              : parseInt(dropDown.split(" ")[0]) * 7,
-          url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
-        });
-        localStorage.setItem("urls", JSON.stringify(urlsArr));
-      } else {
-        localStorage.setItem(
-          "urls",
-          JSON.stringify([
-            {
-              name: SmartName,
-              time:
-                dropDown.split(" ")[1] !== "week"
-                  ? parseInt(dropDown.split(" ")[0])
-                  : parseInt(dropDown.split(" ")[0]) * 7,
-              url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
-            },
-          ])
-        );
-      }
+      setFiles([]); // Clear files after upload
+      setSmartId(`${window.location.host}/smartshow?id=${id}-${user?.uid}`);
     } catch (error: any) {
-      // setError(error.message);
+      // console.error(error.message);
     }
   };
-  const uploadFileToStorage = (SmartName: string, name: string, file: File) => {
+  const addSmartLinkToLocalStorage = useCallback((url: string, name: string, time: string) => {
+    const id = randomId;
+    const urls = localStorage.getItem("urls");
+    if (urls) {
+      const urlsArr = JSON.parse(urls);
+      urlsArr.push({
+        name: name,
+        date: new Date().toDateString(),
+        time:
+          dropDown.split(" ")[1] !== "week"
+            ? parseInt(dropDown.split(" ")[0])
+            : parseInt(dropDown.split(" ")[0]) * 7,
+        url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
+      });
+      localStorage.setItem("urls", JSON.stringify(urlsArr));
+    } else {
+      localStorage.setItem(
+        "urls",
+        JSON.stringify([
+          {
+            name: name,
+            time:
+              dropDown.split(" ")[1] !== "week"
+                ? parseInt(dropDown.split(" ")[0])
+                : parseInt(dropDown.split(" ")[0]) * 7,
+            url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
+          },
+        ])
+      );
+    }
+  }, [dropDown, user?.uid]);
+
+  const uploadFileToStorage = async (SmartName: string, name: string, file: File) => {
     const storageRef = ref(
       storage,
       `smartshare/${user?.uid}/${SmartName}/${name}-${new Date()
@@ -101,44 +102,49 @@ function Smartshare() {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        // setProgress(Math.round(progress));
+        // Handle progress if needed
       },
       (error) => {
-        // setError(error.message);
+        // console.error(error.message);
       },
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          uploadFileToFirestore(downloadURL, SmartName);
+          await uploadFileToFirestore(downloadURL, SmartName);
         } catch (error: any) {
-          // setError(error.message);
+          // console.error(error.message);
         }
       }
     );
   };
+
   const name = useRef<HTMLInputElement>(null);
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!file) return;
+    if (files.length === 0) return;
     if (!name.current?.value) return alert("Please enter a name");
     if (dropDown === "off" || dropDown === "on")
       return alert("Please select a time");
     setModalState(true);
-    urls.forEach((url) => {
-      uploadFileToStorage(name.current!.value, url.file.name, url.file);
+    files.forEach((file) => {
+      uploadFileToStorage(name.current!.value, file.name, file);
     });
-    setUrl([]);
+    setFiles([]);
   };
 
   useEffect(() => {
-    if (!file) return;
-    const blobUrl = URL.createObjectURL(file);
-    setUrl((prev) => [...prev, { file, url: blobUrl }]);
-    return () => URL.revokeObjectURL(blobUrl);
-  }, [file]);
-
+    if (files.length === 0) return;
+    const fileUrls = files.map((file) => ({ file, url: URL.createObjectURL(file) }));
+    setUrls((prevUrls) => [...prevUrls, ...fileUrls]);
+    return () => {
+      fileUrls.forEach(({ url }) => URL.revokeObjectURL(url));
+    };
+  }, [files]);
+  useEffect(() => {
+    if (smartId) {
+      addSmartLinkToLocalStorage(smartId, name.current!.value, dropDown);
+    }
+  }, [addSmartLinkToLocalStorage, dropDown, smartId]);
   return (
     <Layout>
       <div className="flex flex-wrap p-2 justify-start gap-[2rem]"
@@ -150,7 +156,7 @@ function Smartshare() {
           <div className="px-[2vw] w-1/2">
             <h1 className="text-2xl mb-4">Smart Share</h1>
             <div className="flex items-center w-full">
-              <UploadImage setFile={setFile} />
+              <UploadImage setFiles={setFiles} />
             </div>
             <form onSubmit={submit}>
               <div className="flex">
@@ -248,7 +254,7 @@ function Smartshare() {
         </div>
         <Preview urls={urls} theme={theme} />
       </div>
-      {ModalState && (
+      {modalState && (
         <div
           className="absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] h-[30vh] w-[30vw] rounded-xl"
           style={{
@@ -431,9 +437,9 @@ export const Preview = ({ urls, theme }: {
   );
 };
 export const UploadImage = ({
-  setFile,
+  setFiles,
 }: {
-  setFile: React.Dispatch<React.SetStateAction<any>>;
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>; // Change the type to accept an array of files
 }) => {
   const { theme } = useTheme();
   return (
@@ -475,25 +481,28 @@ export const UploadImage = ({
         accept="image/*"
         onChange={(e) => {
           if (e.target.files) {
-            setFile(e.target.files[0]);
+            // Convert FileList to array of files
+            const fileList = Array.from(e.target.files);
+            setFiles(fileList);
           } else {
-            setFile(null);
+            setFiles([]);
           }
         }}
+        multiple // Allow multiple file selection
       />
     </label>
   );
 };
 
-export const SmartShareLink = ({ }: { status?: number | null }) => {
+export const SmartShareLink = ({ status }: { status?: number | null }) => {
   const [urls, setUrl] = useState<
     { name: string; time: string; url: string; date: string }[]
   >([]);
-  const [copyState, setCopyState] = React.useState(false);
+  const [copyState, setCopyState] = useState(false);
+
   useEffect(() => {
     const urls = localStorage.getItem("urls");
     if (urls) {
-      // remove expired links
       const urlsArr = JSON.parse(urls);
       const newUrls = urlsArr.filter((url: any) => {
         const date = new Date(url.date);
@@ -510,14 +519,17 @@ export const SmartShareLink = ({ }: { status?: number | null }) => {
       setUrl(JSON.parse(urls));
     }
   }, []);
+
   const copyURL = (id: number) => {
     navigator.clipboard.writeText(urls[id].url);
     setCopyState(true);
-    setInterval(() => {
+    setTimeout(() => {
       setCopyState(false);
     }, 3000);
   };
+
   const { theme } = useTheme();
+
   return (
     <div className="px-[2vw] w-2/5 h-full">
       <h1 className="text-2xl mb-4">
@@ -526,12 +538,9 @@ export const SmartShareLink = ({ }: { status?: number | null }) => {
           (Click on the link to copy)
         </span>
       </h1>
-      {urls && urls.length > 0
-        ? urls.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center"
-          >
+      {urls && urls.length > 0 ? (
+        urls.map((item, index) => (
+          <div key={index} className="flex flex-col items-center justify-center">
             <div
               className="flex items-center w-full h-[5vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2 relative"
               style={{
@@ -568,7 +577,7 @@ export const SmartShareLink = ({ }: { status?: number | null }) => {
                     </div>
                   ) : (
                     <Image
-                      src={"copy.svg"}
+                      src={"/copy.svg"}
                       alt="copy"
                       style={{
                         filter: theme.invertImage ? "invert(1)" : "invert(0)",
@@ -594,36 +603,36 @@ export const SmartShareLink = ({ }: { status?: number | null }) => {
             </div>
           </div>
         ))
-        : [1, 2, 3, 4, 5].map((item, k) => {
-          return (
+      ) : (
+        [1, 2, 3, 4, 5].map((item, k) => (
+          <div
+            key={k}
+            className="flex items-center w-full h-[5vh] border-2 border-gray-300  border-dashed rounded-lg cursor-pointer mb-2 relative"
+          >
+            <div className="w-[90%] h-full flex justify-center items-center animate-pulse "></div>
             <div
-              key={k}
-              className="flex items-center w-full h-[5vh] border-2 border-gray-300  border-dashed rounded-lg cursor-pointer mb-2 relative"
+              className="w-[10%] h-full  flex items-center "
+              style={{
+                backgroundColor: theme.accent,
+              }}
             >
-              <div className="w-[90%] h-full flex justify-center items-center animate-pulse "></div>
-              <div
-                className="w-[10%] h-full  flex items-center "
-                style={{
-                  backgroundColor: theme.accent,
-                }}
-              >
-                {/* <button className="w-1/2 h-1/2 p-2 relative">
-            <Image src={"edit.svg"} alt="download" fill />
-          </button> */}
-                <button className="w-full h-1/2 p-2 relative">
-                  <Image
-                    src={"copy.svg"}
-                    alt="copy"
-                    style={{
-                      filter: theme.invertImage ? "invert(1)" : "invert(0)",
-                    }}
-                    fill
-                  />
-                </button>
-              </div>
+              <button className="w-full h-1/2 p-2 relative">
+                <Image
+                  src={"/copy.svg"}
+                  alt="copy"
+                  style={{
+                    filter: theme.invertImage ? "invert(1)" : "invert(0)",
+                  }}
+                  fill
+                />
+              </button>
             </div>
-          );
-        })}
+          </div>
+        ))
+      )}
     </div>
   );
 };
+
+
+

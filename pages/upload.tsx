@@ -1,18 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback, use } from "react";
-import storage from "@/firebase/storage";
-import db from "@/firebase/firestore";
+import React, { useEffect, useState, useCallback } from "react";
+import { uploadBytesResumable, getDownloadURL,ref } from "firebase/storage";
+import { collection, doc, updateDoc, addDoc,getDoc } from "firebase/firestore";
 import { useAuth } from "./contexts/auth";
 import { useTheme } from "./contexts/theme";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import storage from "@/firebase/storage";
+import db from "@/firebase/firestore";
 import { TempFilesData } from "./smartshare";
 
 function UploadFile({
@@ -24,29 +17,31 @@ function UploadFile({
   files: React.Dispatch<React.SetStateAction<TempFilesData[]>>;
   status: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [file, setFile] = useState<File | null>(null);
+  const [filesArray, setFilesArray] = useState<File[]>([]);
   const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
-  const Path = file?.type.startsWith("image/") ? "Images" : "Files";
+  const { theme } = useTheme();
+
+  const Path = (file: File) => (file.type.startsWith("image/") ? "Images" : "Files");
+
   const uploadFileToFirestore = useCallback(
-    async (downloadURL: string) => {
+    async (file: File, downloadURL: string) => {
       try {
-        await addDoc(collection(db, `User/${user?.uid}/${Path}`), {
-          name: file?.name,
-          size: file?.size,
+        await addDoc(collection(db, `User/${user?.uid}/${Path(file)}`), {
+          name: file.name,
+          size: file.size,
           location: location,
-          type: file?.type,
+          type: file.type,
           url: downloadURL,
           date: new Date().toDateString(),
         });
-        // console.log("Document successfully written!");
-        setFile(null);
       } catch (error: any) {
         setError(error.message);
       }
     },
-    [file, user?.uid, location]
+    [user?.uid, location]
   );
+
   const HandleStorage = useCallback(async (size: number) => {
     const userDocRef = doc(db, "User", `${user?.uid}`);
     const data = await getDoc(userDocRef);
@@ -75,22 +70,21 @@ function UploadFile({
       );
   }, []);
 
-  const uploadFileToStorage = useCallback(async () => {
-    const storageRef = ref(storage, `${user?.uid}/${Path}/${file?.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file!);
-    const blobURL = URL.createObjectURL(file!);
+  const uploadFileToStorage = useCallback(async (file: File) => {
+    const storageRef = ref(storage, `${user?.uid}/${Path(file)}/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    const blobURL = URL.createObjectURL(file);
     files((prev) => [
       ...prev,
       {
-        file: file!,
+        file: file,
         url: blobURL,
       },
     ]);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         status(Math.round(progress));
       },
       (error) => {
@@ -99,38 +93,38 @@ function UploadFile({
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          await uploadFileToFirestore(downloadURL);
+          await uploadFileToFirestore(file, downloadURL);
         } catch (error: any) {
           setError(error.message);
         }
       }
     );
-  }, [file, user?.uid, uploadFileToFirestore]);
+  }, [user?.uid, uploadFileToFirestore]);
 
   useEffect(() => {
-    if (!file) return;
-    HandleStorage(file.size);
-    uploadFileToStorage();
-  }, [file]);
+    filesArray.forEach(async (file) => {
+      await HandleStorage(file.size);
+      await uploadFileToStorage(file);
+    });
+  }, [filesArray]);
 
-  const { theme } = useTheme();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = e.target.files;
+    if (fileList) {
+      const filesArray = Array.from(fileList);
+      setFilesArray(filesArray);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center w-full" 
-      style={{
-        color: theme.text,
-      }}
-    >
-      <div className="flex items-center justify-center w-full" 
-      >
+    <div className="flex flex-col items-center justify-center w-full" style={{ color: theme.text }}>
+      <div className="flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
           className="flex flex-col items-center justify-center w-full h-[40vh] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer mb-2"
-          style={{
-            backgroundColor: theme.secondary,
-            }}
+          style={{ backgroundColor: theme.secondary }}
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6"
-           >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
               aria-hidden="true"
               className="w-10 h-10 mb-3 text-gray-400"
@@ -147,24 +141,16 @@ function UploadFile({
               />
             </svg>
             <p className="mb-2 text-sm">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
+              <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p className="text-xs ">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
-            </p>
+            <p className="text-xs">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
           </div>
           <input
             id="dropzone-file"
             type="file"
             className="hidden"
-            onChange={(e) => {
-              if (e.target.files) {
-                setFile(e.target.files[0]);
-              } else {
-                setFile(null);
-              }
-            }}
+            onChange={handleFileChange}
+            multiple 
           />
         </label>
       </div>

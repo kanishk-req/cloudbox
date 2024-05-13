@@ -1,13 +1,13 @@
 import { datatype } from "../../components/types"
 export const options = [
     {
-        name: "Open",
+        name: "open",
         onClick: (item: datatype) => {
             window.open(item.url);
         },
     },
     {
-        name: "Delete",
+        name: "delete",
         onClick: () => {
             alert("Deleting ");
         },

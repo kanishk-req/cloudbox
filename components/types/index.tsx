@@ -9,6 +9,7 @@ export interface datatype {
 }
 
 export type themeType = {
+  sidebar?: { primary: string; hover: string; text: string; invertImage: boolean; };
   primary: string;
   secondary: string;
   accent: string;

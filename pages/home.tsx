@@ -10,7 +10,6 @@ import { useAuth } from "./contexts/auth";
 import {
   collection,
   getDocs,
-  or,
   orderBy,
   query,
   where,
@@ -21,7 +20,8 @@ import { useMediaQuery } from "./contexts/mediaQuery";
 import Layout from "@/components/layouts/baseLayout";
 
 function Home() {
-  const { theme } = useTheme();
+  const { theme,sidebar } = useTheme();
+  theme.sidebar = sidebar;
   const [data, setData] = useState<datatype[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { user } = useAuth();

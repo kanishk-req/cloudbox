@@ -3,6 +3,7 @@ import { datatype, themeType } from "@/components/types";
 import { options } from "@/utils/constant";
 import Image from "next/image";
 import styled from "styled-components";
+import { Actions } from "../actions";
 
 const RecentImages = ({
   data,
@@ -14,14 +15,9 @@ const RecentImages = ({
   data?: datatype[];
   loadingState: boolean;
   title?: string;
-  theme?: themeType;
+  theme: themeType;
   size?: "small" | "medium" | "large";
 }) => {
-  const [menu, setMenu] = useState<number>(-1);
-  const handleClick = (index: number) => {
-    if (index !== menu) setMenu(index);
-    else setMenu(-1);
-  };
 
   return (
     <>
@@ -103,93 +99,14 @@ const RecentImages = ({
               >
                 {/* <Link href={`/image/${item.id}`}> */}
                 <div className={`w-full p-2 ${size == "large" ? "h-[75vw] sm:h-[24vw]" : size == "small" ? "h-[60vw] sm:h-[16vw]" : "h-[70vw] sm:h-[20vw]"} `}>
-                  <div className={`relative w-full  z-20 flex justify-between pl-2 capitalize items-center 
+                  <div className={`relative w-full flex justify-between pl-2 capitalize items-center 
                     ${size == "large" ? "h-[13%]" : "h-1/6"}`}>
                     <p className="text-xs">
                       {item.name}
                     </p>
-                    {index !== -1 && menu === index ? (
-                      <div
-                        className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
-                        style={{
-                          filter: theme?.invertImage ? "invert(1)" : "invert(0)",
-                        }}
-                        onClick={() => {
-                          handleClick(index);
-                        }}
-                      >
-                        <Image
-                          src="/cross.svg"
-                          width={10}
-                          height={10}
-                          alt=":"
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className="hover:bg-gray-200 rounded-full hover:border-gray-200 h-7 w-7 flex justify-center items-center"
-                        style={{
-                          filter: theme?.invertImage ? "invert(1)" : "invert(0)",
-                        }}
-                        onClick={() => {
-                          handleClick(index);
-                        }}
-                      >
-                        <Image
-                          src="/threeDotsVertical.svg"
-                          width={20}
-                          height={20}
-                          alt=":"
-                        />
-                      </div>
-                    )}
-                    {index !== -1 && menu === index && (
-                      <div
-                        className="absolute top-[2.5rem] right-1 z-50 rounded-md w-[6rem] h-[6rem]"
-                        style={{
-                          backgroundColor: theme?.secondary,
-                          color: theme?.secondaryText,
-                        }}
-                      >
-                        {options.map((Optionitem, key) => (
-                          <div
-                            key={key}
-                            className="w-full h-1/3 flex justify-center items-center rounded-md"
-                          >
-                            <div
-                              className="w-full h-8 flex justify-center items-center hover:bg-gray-200 hover:text-gray-700"
-                              onClick={() => {
-                                Optionitem.onClick?.call(null,item);
-                              }}
-                              style={{
-                                borderTop:
-                                  key === options.length - 1
-                                    ? "1px solid lightgray"
-                                    : key === 0
-                                      ? "none"
-                                      : "1px solid lightgray",
-                                borderBottom:
-                                  key === 0
-                                    ? "1px solid lightgray"
-                                    : key === options.length - 1
-                                      ? "none"
-                                      : "1px solid lightgray",
-                                borderRadius:
-                                  key === 0
-                                    ? "6px 6px 0 0"
-                                    : key === options.length - 1
-                                      ? "0 0 6px 6px"
-                                      : "none",
-                              }}
-                            >
-                              {Optionitem.name}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <Actions theme={theme} item={item} index={index} />
                   </div>
-                  <div className={`relative w-full z-10 ${size == "large" ? "h-[87%]" : "h-5/6"}`}>
+                  <div className={`relative w-full ${size == "large" ? "h-[87%]" : "h-5/6"}`}>
                     <Image
                       src={item.url}
                       fill
