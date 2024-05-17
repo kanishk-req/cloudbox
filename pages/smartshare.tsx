@@ -44,6 +44,7 @@ function Smartshare() {
             ? parseInt(dropDown.split(" ")[0])
             : parseInt(dropDown.split(" ")[0]) * 7,
         date: new Date().toDateString(),
+        smartLink: `https://cloudbox.kanishkrawatt.tech/smartshow?id=${id}-${user?.uid}`,
       });
       await addDoc(collection(db, `User/${user?.uid}/Smartshare/${randomId}/files`), {
         name: files[0]?.name,
@@ -58,37 +59,6 @@ function Smartshare() {
       // console.error(error.message);
     }
   };
-  const addSmartLinkToLocalStorage = useCallback((url: string, name: string, time: string) => {
-    const id = randomId;
-    const urls = localStorage.getItem("urls");
-    if (urls) {
-      const urlsArr = JSON.parse(urls);
-      urlsArr.push({
-        name: name,
-        date: new Date().toDateString(),
-        time:
-          dropDown.split(" ")[1] !== "week"
-            ? parseInt(dropDown.split(" ")[0])
-            : parseInt(dropDown.split(" ")[0]) * 7,
-        url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
-      });
-      localStorage.setItem("urls", JSON.stringify(urlsArr));
-    } else {
-      localStorage.setItem(
-        "urls",
-        JSON.stringify([
-          {
-            name: name,
-            time:
-              dropDown.split(" ")[1] !== "week"
-                ? parseInt(dropDown.split(" ")[0])
-                : parseInt(dropDown.split(" ")[0]) * 7,
-            url: `${window.location.host}/smartshow?id=${id}-${user?.uid}`,
-          },
-        ])
-      );
-    }
-  }, [dropDown, user?.uid]);
 
   const uploadFileToStorage = async (SmartName: string, name: string, file: File) => {
     const storageRef = ref(
@@ -140,11 +110,6 @@ function Smartshare() {
       fileUrls.forEach(({ url }) => URL.revokeObjectURL(url));
     };
   }, [files]);
-  useEffect(() => {
-    if (smartId) {
-      addSmartLinkToLocalStorage(smartId, name.current!.value, dropDown);
-    }
-  }, [addSmartLinkToLocalStorage, dropDown, smartId]);
   return (
     <Layout>
       <div className="flex flex-wrap p-2 justify-start gap-[2rem]"
@@ -495,30 +460,28 @@ export const UploadImage = ({
 };
 
 export const SmartShareLink = ({ status }: { status?: number | null }) => {
+  const { user } = useAuth();
   const [urls, setUrl] = useState<
-    { name: string; time: string; url: string; date: string }[]
+    { name: string; time: string; url: string}[]
   >([]);
+  const getSmartShareLinks = useCallback(async () => {
+    const data = await fetch("/api/getSmartShareLinks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ uid: user?.uid }),
+    })
+    data.json().then((res) => {
+      setUrl(res.data);
+    });
+  }, [user?.uid]);
+
   const [copyState, setCopyState] = useState(false);
 
   useEffect(() => {
-    const urls = localStorage.getItem("urls");
-    if (urls) {
-      const urlsArr = JSON.parse(urls);
-      const newUrls = urlsArr.filter((url: any) => {
-        const date = new Date(url.date);
-        const time = url.time;
-        const newDate = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() + time
-        );
-        const today = new Date();
-        return newDate > today;
-      });
-      localStorage.setItem("urls", JSON.stringify(newUrls));
-      setUrl(JSON.parse(urls));
-    }
-  }, []);
+    getSmartShareLinks();
+  }, [getSmartShareLinks]);
 
   const copyURL = (id: number) => {
     navigator.clipboard.writeText(urls[id].url);

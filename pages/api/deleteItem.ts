@@ -42,7 +42,6 @@ function deleteDocFromDB(path: string) {
     querySnapshot.forEach((docs) => {
       const docRef = doc(db, `User/${userId}/Images/`, docs.id);
       deleteDoc(docRef);
-      console.log("Document deleted", docs.id);
     });
   });
   return null;
@@ -54,12 +53,10 @@ export default function handler(
   if (req.method === "POST") {
     
     const { data, deletefromDB } = req.body;
-    console.log(data,deletefromDB);
     data.map((item) => {
       const path = getPathStorageFromUrl(item);
       const storageRef = ref(storage, path);
       deleteObject(storageRef);
-      console.log("image deleted")
       if (deletefromDB) {
         deleteDocFromDB(path);
       }
