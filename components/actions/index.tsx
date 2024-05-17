@@ -20,12 +20,13 @@ export enum Action {
     download = "download"
 }
 
-export const Actions = ({ theme, item, index }: {
+export const Actions = ({ theme, item, index,menu,setMenu }: {
     theme: themeType,
     item: datatype,
     index: number
+    menu : number
+    setMenu : Dispatch<SetStateAction<number>>
 }) => {
-    const [menu, setMenu] = useState<number>(-1);
     const [modal, setModal] = useState<ModalObject>({ status: "", item: { name: "", url: "" } })
     const handleClick = (index: number) => {
         if (index !== menu) setMenu(index);
@@ -61,7 +62,6 @@ export const Actions = ({ theme, item, index }: {
                 link.click();
                 document.body.removeChild(link);
             });
-
     }
     return (
         <React.Fragment>

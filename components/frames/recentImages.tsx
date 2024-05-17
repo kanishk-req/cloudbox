@@ -1,6 +1,7 @@
 import { datatype, themeType } from "@/components/types";
 import Image from "next/image";
 import styled from "styled-components";
+import { useState } from "react";
 import { Actions } from "@/components/actions";
 const RecentImages = ({
   data,
@@ -15,7 +16,7 @@ const RecentImages = ({
   theme: themeType;
   size?: "small" | "medium" | "large"
 }) => {
-
+  const [menu, setMenu] = useState<number>(-1);
   return (
     <>
       {loadingState || data.length <= 0 ? (
@@ -103,7 +104,7 @@ const RecentImages = ({
                     <p className="text-xs">
                       {item.date}
                     </p>
-                    <Actions theme={theme} item={item} index={index} />
+                    <Actions theme={theme} item={item} index={index} menu={menu} setMenu={setMenu} />
                   </div>
 
                   <div className={`relative w-full ${size == "large" ? "h-[87%]" : "h-5/6"}`}>

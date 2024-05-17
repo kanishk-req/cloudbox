@@ -18,6 +18,7 @@ const RecentImages = ({
   theme: themeType;
   size?: "small" | "medium" | "large";
 }) => {
+  const [menu, setMenu] = useState<number>(-1);
 
   return (
     <>
@@ -104,7 +105,7 @@ const RecentImages = ({
                     <p className="text-xs">
                       {item.name}
                     </p>
-                    <Actions theme={theme} item={item} index={index} />
+                    <Actions theme={theme} item={item} index={index} menu={menu} setMenu={setMenu} />
                   </div>
                   <div className={`relative w-full ${size == "large" ? "h-[87%]" : "h-5/6"}`}>
                     <Image

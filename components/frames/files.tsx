@@ -129,7 +129,7 @@ const RecentImages = ({
                 >
                   <div className="h-1/6  w-full relative z-10 flex justify-between pl-2 capitalize items-center">
                     {item.date}
-                    <Actions theme={theme} item={item} index={index} />
+                    <Actions theme={theme} item={item} index={index} menu={menu} setMenu={setMenu} />
                   </div>
                   <div className="h-5/6 relative gap-4 w-full flex justify-center items-center flex-col">
                     <button
