@@ -56,7 +56,6 @@ function Image() {
     if (!user?.uid) return;
     getImageData(user?.uid);
   }, [getImageData, user?.uid]);
-  console.log(images);
   return (
     <Layout>
       {images.length > 0
