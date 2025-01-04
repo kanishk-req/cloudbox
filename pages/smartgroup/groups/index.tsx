@@ -79,6 +79,7 @@ function Image() {
                     loadingState={loading}
                     theme={theme}
                     title={item.date}
+                    size="large" 
                   />
                 ))
               : [1, 2, 3].map((item, index) => (

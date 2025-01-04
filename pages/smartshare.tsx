@@ -462,7 +462,7 @@ export const UploadImage = ({
 export const SmartShareLink = ({ status }: { status?: number | null }) => {
   const { user } = useAuth();
   const [urls, setUrl] = useState<
-    { name: string; time: string; url: string}[]
+    { name: string; time: string; url: string }[]
   >([]);
   const getSmartShareLinks = useCallback(async () => {
     const data = await fetch("/api/getSmartShareLinks", {
@@ -477,7 +477,7 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
     });
   }, [user?.uid]);
 
-  const [copyState, setCopyState] = useState(false);
+  const [copyState, setCopyState] = useState<number>(-1);
 
   useEffect(() => {
     getSmartShareLinks();
@@ -485,9 +485,9 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
 
   const copyURL = (id: number) => {
     navigator.clipboard.writeText(urls[id].url);
-    setCopyState(true);
+    setCopyState(id);
     setTimeout(() => {
-      setCopyState(false);
+      setCopyState(-1);
     }, 3000);
   };
 
@@ -529,12 +529,13 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
                 }}
               >
                 <button
+                  key={index}
                   className="w-full h-1/2 p-2 relative"
                   onClick={() => {
                     copyURL(index);
                   }}
                 >
-                  {copyState ? (
+                  {copyState === index ? (
                     <div className="w-full h-full flex justify-center items-center">
                       Copied
                     </div>

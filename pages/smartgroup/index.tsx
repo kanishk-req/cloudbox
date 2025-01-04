@@ -71,7 +71,7 @@ function Image() {
         </div>
         <div className="flex flex-wrap px-2 justify-start">
           <div
-            className="w-full max-h-[80vh] overflow-auto"
+            className="w-full max-h-[90vh] overflow-auto"
             style={{
               backgroundColor: theme.primary,
             }}
