@@ -6,6 +6,7 @@ type FolderDataTypes = {
   name: string;
   date: string;
   size: number;
+  id: string;
 };
 
 export default async function handler(
@@ -19,7 +20,7 @@ export default async function handler(
     await getDocs(collectionRef).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         const { name, date, size } = doc.data();
-        FolderData.push({ name, date, size });
+        FolderData.push({ name, date, size , id: doc.id });
       });
       res.status(200).json({ status: "Done", data: FolderData });
     });

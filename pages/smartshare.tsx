@@ -13,6 +13,7 @@ import { themeType } from "@/components/types";
 export interface TempFilesData {
   file: File;
   url: string;
+  status?: string;
 }
 
 function Smartshare() {
@@ -124,13 +125,13 @@ function Smartshare() {
               <UploadImage setFiles={setFiles} />
             </div>
             <form onSubmit={submit}>
-              <div className="flex">
+              <div className="flex h-[45px]">
                 <label
                   htmlFor="search-dropdown"
                   className="mb-2 text-sm font-medium sr-only "
                 ></label>
                 <button
-                  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg"
+                  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border-[2px] border-dashed border-gray-300 rounded-l-lg"
                   type="button"
                   onClick={() =>
                     setDropDown(dropDown === "off" ? "on" : "off")
@@ -196,18 +197,18 @@ function Smartshare() {
                     </ul>
                   </div>
                 )}
-                <div className="relative w-full">
+                <div className="relative w-full h-full">
                   <input
                     type="search"
                     id="search-dropdown"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-100 border-l-2 border border-gray-300 focus:outline-none"
+                    className="block p-2.5 h-full w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-100 border-dashed border-l-2 border-[2px] border-gray-300 focus:outline-none"
                     placeholder="Title"
                     autoComplete="off"
                     ref={name}
                   />
                   <button
                     type="submit"
-                    className="absolute top-1 right-1 p-[1rem] text-sm font-medium text-white bg-gray-50"
+                    className="absolute top-1 right-1 p-[1rem] h-[85%] text-sm font-medium text-white bg-gray-50"
                   >
                     <Image src={"enter.svg"} alt="img" fill />
                   </button>
