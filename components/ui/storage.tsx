@@ -1,8 +1,9 @@
 import React from "react";
-import { useAuth } from "../../pages/contexts/auth";
-import { useTheme } from "../../pages/contexts/theme";
+import { useAuth } from "../../utils/contexts/auth";
+import { useTheme } from "../../utils/contexts/theme";
 import db from "../../firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
+import axios from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -48,38 +49,37 @@ function Storage() {
   React.useEffect(() => {
     if (!user) return;
     const getData = async () => {
-      const docRef = doc(db, "User", user?.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setData({
-          labels: ["Used", "Free"],
-          datasets: [
-            {
-              label: "Storage (mb)",
-              data: [
-                docSnap.data()?.Storage?.Used,
-                docSnap.data()?.Storage?.Free,
-              ],
-              backgroundColor: [
-                "rgba(75, 192, 192, 0.5)",
-                "rgba(153, 102, 255, 0.5)",
-              ],
-              borderColor: [
-                "rgba(75, 192, 192, 0.5)",
-                "rgba(153, 102, 255, 0.5)",
-              ],
-              borderWidth: 1,
-            },
-          ],
-        });
-        setDisplayData({
-          free: docSnap.data()?.Storage?.Free,
-          used: docSnap.data()?.Storage?.Used,
-          total: docSnap.data()?.Storage?.Total,
-        });
-      } else {
-        alert("No such document!");
-      }
+      const api = await axios.post("/api/storageInfo", {
+        uid: user.uid,
+      });
+      const storageData = api.data;
+
+      setData({
+        labels: ["Used", "Free"],
+        datasets: [
+          {
+            label: "Storage (mb)",
+            data: [
+              storageData.used,
+              storageData.free,
+            ],
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.5)",
+              "rgba(153, 102, 255, 0.5)",
+            ],
+            borderColor: [
+              "rgba(75, 192, 192, 0.5)",
+              "rgba(153, 102, 255, 0.5)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+      setDisplayData({
+        free: storageData?.free,
+        used: storageData?.used,
+        total: storageData?.total,
+      });
     };
     getData();
   }, [user]);

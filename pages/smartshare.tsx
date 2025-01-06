@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useTheme } from "./contexts/theme";
+import { useTheme } from "../utils/contexts/theme";
 import Image from "next/image";
 import storage from "@/firebase/storage";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useAuth } from "./contexts/auth";
+import { useAuth } from "../utils/contexts/auth";
 import db from "@/firebase/firestore";
 import { addDoc, collection, setDoc, doc } from "firebase/firestore";
 import Layout from "@/components/layouts/baseLayout";
@@ -13,6 +13,7 @@ import { themeType } from "@/components/types";
 export interface TempFilesData {
   file: File;
   url: string;
+  status?: string;
 }
 
 function Smartshare() {
@@ -124,13 +125,13 @@ function Smartshare() {
               <UploadImage setFiles={setFiles} />
             </div>
             <form onSubmit={submit}>
-              <div className="flex">
+              <div className="flex h-[45px]">
                 <label
                   htmlFor="search-dropdown"
                   className="mb-2 text-sm font-medium sr-only "
                 ></label>
                 <button
-                  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg"
+                  className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border-[2px] border-dashed border-gray-300 rounded-l-lg"
                   type="button"
                   onClick={() =>
                     setDropDown(dropDown === "off" ? "on" : "off")
@@ -196,18 +197,18 @@ function Smartshare() {
                     </ul>
                   </div>
                 )}
-                <div className="relative w-full">
+                <div className="relative w-full h-full">
                   <input
                     type="search"
                     id="search-dropdown"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-100 border-l-2 border border-gray-300 focus:outline-none"
+                    className="block p-2.5 h-full w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-100 border-dashed border-l-2 border-[2px] border-gray-300 focus:outline-none"
                     placeholder="Title"
                     autoComplete="off"
                     ref={name}
                   />
                   <button
                     type="submit"
-                    className="absolute top-1 right-1 p-[1rem] text-sm font-medium text-white bg-gray-50"
+                    className="absolute top-1 right-1 p-[1rem] h-[85%] text-sm font-medium text-white bg-gray-50"
                   >
                     <Image src={"enter.svg"} alt="img" fill />
                   </button>
@@ -462,7 +463,7 @@ export const UploadImage = ({
 export const SmartShareLink = ({ status }: { status?: number | null }) => {
   const { user } = useAuth();
   const [urls, setUrl] = useState<
-    { name: string; time: string; url: string}[]
+    { name: string; time: string; url: string }[]
   >([]);
   const getSmartShareLinks = useCallback(async () => {
     const data = await fetch("/api/getSmartShareLinks", {
@@ -477,7 +478,7 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
     });
   }, [user?.uid]);
 
-  const [copyState, setCopyState] = useState(false);
+  const [copyState, setCopyState] = useState<number>(-1);
 
   useEffect(() => {
     getSmartShareLinks();
@@ -485,9 +486,9 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
 
   const copyURL = (id: number) => {
     navigator.clipboard.writeText(urls[id].url);
-    setCopyState(true);
+    setCopyState(id);
     setTimeout(() => {
-      setCopyState(false);
+      setCopyState(-1);
     }, 3000);
   };
 
@@ -529,12 +530,13 @@ export const SmartShareLink = ({ status }: { status?: number | null }) => {
                 }}
               >
                 <button
+                  key={index}
                   className="w-full h-1/2 p-2 relative"
                   onClick={() => {
                     copyURL(index);
                   }}
                 >
-                  {copyState ? (
+                  {copyState === index ? (
                     <div className="w-full h-full flex justify-center items-center">
                       Copied
                     </div>

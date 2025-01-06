@@ -10,8 +10,8 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { useAuth } from "@/pages/contexts/auth";
-import { useTheme } from "@/pages/contexts/theme";
+import { useAuth } from "@/utils/contexts/auth";
+import { useTheme } from "@/utils/contexts/theme";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
 import { datatype, imageType } from "@/components/types";
@@ -71,7 +71,7 @@ function Image() {
         </div>
         <div className="flex flex-wrap px-2 justify-start">
           <div
-            className="w-full max-h-[80vh] overflow-auto"
+            className="w-full max-h-[90vh] overflow-auto"
             style={{
               backgroundColor: theme.primary,
             }}

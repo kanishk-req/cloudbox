@@ -9,8 +9,8 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { useAuth } from "@/pages/contexts/auth";
-import { useTheme } from "@/pages/contexts/theme";
+import { useAuth } from "@/utils/contexts/auth";
+import { useTheme } from "@/utils/contexts/theme";
 import Sidebar from "@/components/ui/sidebar";
 import Searchbar from "@/components/ui/searchbar";
 import { datatype, imageType } from "@/components/types";
@@ -79,6 +79,7 @@ function Image() {
                     loadingState={loading}
                     theme={theme}
                     title={item.date}
+                    size="large" 
                   />
                 ))
               : [1, 2, 3].map((item, index) => (
